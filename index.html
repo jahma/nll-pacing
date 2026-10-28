@@ -124,8 +124,6 @@ h2 { font-family: var(--display); font-weight: 700; color: var(--ink); }
     <div class="ctl"><label for="target" id="t-target"></label><input id="target" type="text" value="1:27:00" inputmode="numeric"></div>
     <div class="ctl"><span class="lbl" id="t-run"></span>
       <div class="seg" role="group"><button id="m-race"></button><button id="m-probe"></button></div></div>
-    <div class="ctl" id="offbox" hidden><label for="offset" id="t-pitch"></label><input id="offset" type="number" value="0" step="50" min="0" max="1500"></div>
-    <div class="ctl" id="offbox2" hidden><label for="post" id="t-post"></label><input id="post" type="number" value="0" step="50" min="0" max="1500"></div>
     <div class="ctl"><label for="uphill"><span id="t-uphill"></span> <output id="uphill-o"></output></label><input id="uphill" type="range" min="-0.3" max="0.5" step="0.01" value="0"></div>
     <div class="ctl"><label for="split"><span id="t-split"></span> <output id="split-o"></output></label><input id="split" type="range" min="-90" max="120" step="10" value="0"></div>
   </section>
@@ -185,7 +183,7 @@ const T = {
     pitchrow: 'Pitch laps (flat)', bad: 'Enter the target as h:mm:ss, e.g. 1:27:00.',
     foot: ['<b>How the paces are set.</b> The course is split into 20 m pieces. Each piece gets the pace that costs the same effort at its gradient g as the flat base pace: uphill base × (1 + 3.3·g), downhill base × (1 + 1.8·g), with g as a fraction (6 % = 0.06). So at +6 % you run about 20 % slower, at −6 % about 11 % faster. The base pace is chosen so that all pieces add up to the target time. Source: a common runners’ rule of thumb, usually attributed to Jack Daniels (<i>Daniels’ Running Formula</i>): about 12–15 s per mile slower per 1 % uphill, about 8 s faster per 1 % downhill; at around 4:20/km that is 3.3 % and 1.8 %. Elevation profile = mean of three race GPS tracks, normalised to 21.0975 km.',
       '<b>Checked against three past races:</b> predicted km splits are within 5–6 s/km. In past races the same 6 km stretch (km 2.5–8.5 and again 14.2–20.2) was 36–60 s slower the second time. The fade dial adds a gradual slowdown on top of the course (neutral at halfway): +30 s means the 2nd half is 30 s slower than at even effort, negative values mean a negative split. At 0 the plan assumes even effort; +30 to +60 s is what fatigue typically costs.',
-      '<b>Effort on climbs</b> above 0 means slowing down less on climbs and taking it back on flats and descents. <b>Probelauf:</b> the clock starts where the field comes off the pitch onto the street to Bebenhausen (race-km 0.65) and stops at the crossing at the end of “Across the field” (race-km 20.48, no finishing straight); target time is the race equivalent, so 1:35 for the 1:35 group.'] },
+      '<b>Effort on climbs</b> above 0 means slowing down less on climbs and taking it back on flats and descents. <b>Probelauf:</b> calculated from crossing to crossing: from the street to Bebenhausen (race-km 0.65) to the crossing at the end of “Across the field” (race-km 20.48), without laps on the sports ground before or after; target time is the race equivalent, so 1:35 for the 1:35 group.'] },
   fr: { disc: 'Non relu par un locuteur natif.', intro: 'Le Nikolauslauf se court de préférence à la sensation, avec beaucoup de plaisir et sans trop regarder sa montre. Si vous voulez être plus précis ou si vous hésitez, voici un guide : une allure cible pour chaque section, adaptée à la pente.',
     sub: '21,1 km dans le Schönbuch, environ 300 m de dénivelé.',
     lang: 'Langue', target: 'Temps visé', run: 'Course', race: 'NLL', probe: 'Probelauf', pitch: 'Tours de stade avant (m)', post: 'Tours de stade après (m)',
@@ -201,7 +199,7 @@ const T = {
     pitchrow: 'Tours de stade (plat)', bad: 'Saisissez le temps visé au format h:mm:ss, p. ex. 1:27:00.',
     foot: ['<b>Comment les allures sont calculées.</b> Le parcours est découpé en tronçons de 20 m. Chaque tronçon reçoit l’allure qui demande le même effort à sa pente g que l’allure de base sur le plat : en montée base × (1 + 3,3·g), en descente base × (1 + 1,8·g), g en fraction (6 % = 0,06). À +6 %, on court donc environ 20 % plus lentement, à −6 % environ 11 % plus vite. L’allure de base est choisie pour que la somme donne le temps visé. Source : une règle empirique répandue chez les coureurs, généralement attribuée à Jack Daniels (<i>Daniels’ Running Formula</i>) : environ 12–15 s par mile de plus par % de montée, environ 8 s de moins par % de descente ; vers 4:20/km, cela fait 3,3 % et 1,8 %. Profil = moyenne de trois traces GPS de la course, normalisée à 21,0975 km.',
       '<b>Vérifié sur trois courses passées :</b> les temps au km prédits sont à 5–6 s/km près. Lors des courses passées, le même tronçon de 6 km (km 2,5–8,5 puis 14,2–20,2) a été couru 36–60 s plus lentement au second passage. Le réglage « baisse » ajoute un ralentissement progressif en plus du parcours (neutre à mi-course) : +30 s signifie une 2e moitié 30 s plus lente qu’à effort constant, une valeur négative un negative split. À 0, le plan suppose un effort constant ; +30 à +60 s, c’est ce que coûte habituellement la fatigue.',
-      '<b>Effort en montée</b> au-dessus de 0 : ralentir moins dans les montées et récupérer sur le plat et en descente. <b>Probelauf :</b> le chrono démarre là où le peloton quitte le stade pour la route de Bebenhausen (km 0,65) et s’arrête au croisement à la fin de « À travers champs » (km 20,48, sans ligne droite finale) ; le temps visé est l’équivalent course, donc 1:35 pour le groupe 1:35.'] },
+      '<b>Effort en montée</b> au-dessus de 0 : ralentir moins dans les montées et récupérer sur le plat et en descente. <b>Probelauf :</b> calculé de croisement à croisement : de la route de Bebenhausen (km 0,65) au croisement à la fin de « À travers champs » (km 20,48), sans tours de stade avant ni après ; le temps visé est l’équivalent course, donc 1:35 pour le groupe 1:35.'] },
   de: { disc: '', intro: 'Am besten läuft man den Nikolauslauf nach Gefühl, mit viel Spaß und ohne zu viel auf die Uhr zu kucken. Wer es genauer wissen will oder unsicher ist, findet hier einen Guide: ein Zieltempo für jeden Abschnitt, passend zur Steigung.',
     sub: '21,1 km Schönbuch, rund 300 Höhenmeter.',
     lang: 'Sprache', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Sportplatz vorher (m)', post: 'Sportplatz nachher (m)',
@@ -217,7 +215,7 @@ const T = {
     pitchrow: 'Sportplatzrunden (flach)', bad: 'Zielzeit als h:mm:ss eingeben, z. B. 1:27:00.',
     foot: ['<b>So entstehen die Tempi.</b> Die Strecke ist in 20-m-Stücke zerlegt. Jedes Stück bekommt das Tempo, das bei seiner Steigung g gleich viel Kraft kostet wie das flache Grundtempo: bergauf Grundtempo × (1 + 3,3·g), bergab Grundtempo × (1 + 1,8·g), mit g als Anteil (6 % = 0,06). Bei 6 % bergauf ist man also rund 20 % langsamer, bei 6 % bergab rund 11 % schneller. Das Grundtempo wird so gewählt, dass alle Stücke zusammen die Zielzeit ergeben. Quelle: eine verbreitete Läufer-Faustregel, die meist Jack Daniels (<i>Daniels’ Running Formula</i>) zugeschrieben wird: pro 1 % Steigung etwa 12–15 s pro Meile langsamer, pro 1 % Gefälle etwa 8 s schneller; bei rund 4:20/km entspricht das 3,3 % bzw. 1,8 %. Höhenprofil = Mittel dreier Renn-GPS-Tracks, auf 21,0975 km normiert.',
       '<b>Gegen drei frühere Rennen geprüft:</b> vorhergesagte km-Splits liegen 5–6 s/km daneben. In den Rennen war dasselbe 6-km-Stück (km 2,5–8,5 und wieder 14,2–20,2) beim zweiten Mal 36–60 s langsamer. Der Regler „Einbruch“ legt ein allmähliches Langsamerwerden über die ganze Strecke obendrauf (zur Hälfte neutral): +30 s heißt, die 2. Hälfte ist 30 s langsamer als bei gleichmäßiger Anstrengung; negative Werte bedeuten einen negativen Split (2. Hälfte schneller). Bei 0 rechnet der Plan mit gleichmäßiger Anstrengung; +30 bis +60 s ist, was Ermüdung typischerweise kostet.',
-      '<b>Einsatz am Berg</b> über 0 heißt: am Berg weniger langsamer werden, im Flachen und bergab zurückholen. <b>Probelauf:</b> Die Uhr startet, wo das Feld vom Sportplatz auf die Straße nach Bebenhausen kommt (Renn-km 0,65), und endet an der Kreuzung am Ende von „Übers Feld“ (Renn-km 20,48, ohne Zielgerade); Zielzeit = Renn-Äquivalent, also 1:35 für die 1:35-Gruppe.'] },
+      '<b>Einsatz am Berg</b> über 0 heißt: am Berg weniger langsamer werden, im Flachen und bergab zurückholen. <b>Probelauf:</b> gerechnet von Kreuzung zu Kreuzung: von der Straße nach Bebenhausen (Renn-km 0,65) bis zur Kreuzung am Ende von „Übers Feld“ (Renn-km 20,48), ohne Runden auf dem Sportplatz davor oder danach; Zielzeit = Renn-Äquivalent, also 1:35 für die 1:35-Gruppe.'] },
   sw: { disc: 'Nicht von Muttersprachlern geprüft.', intro: 'Am beschte lauft mr dr Nikolauslauf noch Gfühl, mit viel Spaß ond ohne zviel auf d\'Uhr z\'gucka. Wer\'s genauer wissa will oder ned sicher isch: Do isch a Guide, mit am Tempo für jedes Stückle, passend zur Steigung.',
     sub: '21,1 km durch dr Schönbuch, so 300 Höhameter.',
     lang: 'Sproch', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Erscht auf em Sportplatz (m)', post: 'Hinterher auf em Sportplatz (m)',
@@ -233,7 +231,7 @@ const T = {
     pitchrow: 'Sportplatzronda (eba)', bad: 'Zielzeit als h:mm:ss neischreiba, z. B. 1:27:00.',
     foot: ['<b>Wie’s Tempo z’stand kommt.</b> D’Strecke isch en 20-m-Stückle zerlegt. Jedes Stückle kriegt des Tempo, wo bei seiner Steigung g gleich viel Kraft koscht wie’s flache Grundtempo: nauf Grundtempo × (1 + 3,3·g), nab Grundtempo × (1 + 1,8·g), g als Anteil (6 % = 0,06). Bei 6 % nauf bisch also so 20 % langsamer, bei 6 % nab so 11 % schneller. Quelle: a gängige Läufer-Faustregel, wo mr meischtens em Jack Daniels (<i>Daniels’ Running Formula</i>) zuschreibt: pro Prozent nauf so 12–15 s pro Meile langsamer, pro Prozent nab so 8 s schneller. S’Profil isch dr Schnitt aus drei Renn-GPS-Tracks.',
       '<b>Gega drei frühere Renna prüft:</b> d\'km-Splits liegat 5–6 s/km drneba. Des gleiche 6-km-Stück (km 2,5–8,5 ond nomol 14,2–20,2) war beim zwoita Mol 36–60 s langsamer. Dr Regler „Eibruch“ macht di über d\'ganze Strecke allmählich langsamer (zur Hälfte neutral): +30 s hoißt, d\'2. Hälfte isch 30 s langsamer wie bei gleichmäßigem Schaffa; minus hoißt, d\'2. Hälfte isch schneller. Bei 0 rechnet dr Plan gleichmäßig; +30 bis +60 s koscht\'s halt meischtens.',
-      '<b>Am Buckel</b> über 0: am Berg weniger langsam werra, des holsch no em Flacha ond bergab wieder raus. <b>Probelauf:</b> D\'Uhr lauft ab do, wo\'s Feld vom Sportplatz auf d\'Straß noch Bebahausa kommt (Renn-km 0,65), ond hört an dr Kreuzung am End vo „Übers Feld“ auf (ohne Zielgerade); Zielzeit = wie em Renna, also 1:35 für d\'1:35-Gruppe.'] },
+      '<b>Am Buckel</b> über 0: am Berg weniger langsam werra, des holsch no em Flacha ond bergab wieder raus. <b>Probelauf:</b> grechnet vo Kreuzung zu Kreuzung: vo dr Straß noch Bebahausa (Renn-km 0,65) bis zur Kreuzung am End vo „Übers Feld“ (Renn-km 20,48), ohne Ronda auf em Sportplatz vorher oder hinterher; Zielzeit = wie em Renna, also 1:35 für d\'1:35-Gruppe.'] },
   by: { disc: 'Nicht von Muttersprachlern geprüft.', intro: 'Am bestn lafft ma an Nikolauslauf nach Gfui, mit vui Gaudi und ohne zvui auf d\'Uhr z\'schaun. Wer\'s genauer wissn mog oder se ned sicher is: Do is a Guide, mit am Tempo für jeds Stückl, passend zur Steigung.',
     sub: '21,1 km durch\'n Schönbuch, guad 300 Höhenmeter.',
     lang: 'Sprach', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Zerscht am Sportplatz (m)', post: 'Hinterher am Sportplatz (m)',
@@ -249,7 +247,7 @@ const T = {
     pitchrow: 'Sportplatzrundn (eben)', bad: 'Zielzeit ois h:mm:ss eigebn, z. B. 1:27:00.',
     foot: ['<b>Wia’s Tempo zammkimmt.</b> D’Streckn is in 20-m-Stückl zerlegt. Jeds Stückl kriagt des Tempo, des bei seiner Steigung g grad so vui Kraft kost wia’s flache Grundtempo: auffi Grundtempo × (1 + 3,3·g), owi Grundtempo × (1 + 1,8·g), g ois Anteil (6 % = 0,06). Bei 6 % auffi bist also so 20 % langsamer, bei 6 % owi so 11 % schneller. Quelle: a gängige Läufer-Faustregel, de ma meistns am Jack Daniels (<i>Daniels’ Running Formula</i>) zuaschreibt: pro Prozent auffi so 12–15 s pro Meile langsamer, pro Prozent owi so 8 s schneller. Des Profil is da Schnitt aus drei Renn-GPS-Tracks.',
       '<b>Gegen drei frühere Rennen prüft:</b> d\'km-Splits liegn 5–6 s/km danebn. Des gleiche 6-km-Stückl (km 2,5–8,5 und no amoi 14,2–20,2) war beim zwoatn Mal 36–60 s langsamer. Da Regler „Eibruch“ macht di über d\'ganze Streckn allmählich langsamer (zur Hälftn neutral): +30 s hoaßt, d\'2. Hälftn is 30 s langsamer ois bei gleichmäßiger Anstrengung; minus hoaßt, d\'2. Hälftn is schneller. Bei 0 rechnet da Plan gleichmäßig; +30 bis +60 s kost\'s hoit meistns.',
-      '<b>Am Berg</b> über 0: am Berg weniger langsam wern, des holst nacha in da Ebene und owi wieder raus. <b>Probelauf:</b> D\'Uhr lafft ab do, wo\'s Feld vom Sportplatz auf d\'Straß nach Bebenhausen kimmt (Renn-km 0,65), und hört an da Kreuzung am End vo „Übers Feld“ auf (ohne Zielgerade); Zielzeit = wia im Rennen, also 1:35 für d\'1:35-Gruppn.'] },
+      '<b>Am Berg</b> über 0: am Berg weniger langsam wern, des holst nacha in da Ebene und owi wieder raus. <b>Probelauf:</b> grechnet vo Kreuzung zu Kreuzung: vo da Straß nach Bebenhausen (Renn-km 0,65) bis zur Kreuzung am End vo „Übers Feld“ (Renn-km 20,48), ohne Rundn am Sportplatz vorher oder hinterher; Zielzeit = wia im Rennen, also 1:35 für d\'1:35-Gruppn.'] },
 };
 let lang = 'de', mode = 'race', gran = 's';  // defaults: Deutsch, NLL, Abschnitte (always, no remembered state)
 const t = () => T[lang];
@@ -415,7 +413,7 @@ function drawTable(rs, Tt) {
 
 function setTexts() {
   const L = t();
-  [['t-intro','intro'],['t-sub','sub'],['t-lang','lang'],['t-target','target'],['t-run','run'],['m-race','race'],['m-probe','probe'],['t-pitch','pitch'],['t-post','post'],
+  [['t-intro','intro'],['t-sub','sub'],['t-lang','lang'],['t-target','target'],['t-run','run'],['m-race','race'],['m-probe','probe'],
    ['t-uphill','uphill'],['t-split','split'],['t-course','course'],['t-profile','profile'],['hover','hover'],
    ['t-splits','splits'],['g-1','g1'],['g-2','g2'],['g-s','gs']].forEach(([id, k]) => $(id).textContent = L[k]);
   $('foot').innerHTML = L.foot.map(x => `<div>${x}</div>`).join('');
@@ -423,7 +421,6 @@ function setTexts() {
   ['en','de','fr','sw','by'].forEach(x => $('l-'+x).setAttribute('aria-pressed', x === lang));
   $('m-race').setAttribute('aria-pressed', mode === 'race'); $('m-probe').setAttribute('aria-pressed', mode === 'probe');
   [['1','g-1'],['2','g-2'],['s','g-s']].forEach(([g, id]) => $(id).setAttribute('aria-pressed', g === gran));
-  $('offbox').hidden = mode !== 'probe'; $('offbox2').hidden = mode !== 'probe';
   $('disc').textContent = t().disc; $('disc').hidden = !t().disc;
 }
 
@@ -433,7 +430,7 @@ function update() {
   $('uphill-o').textContent = up === 0 ? L.even : (up > 0 ? '+' : '') + Math.round(up*100) + ' %';
   $('split-o').textContent = split === 0 ? L.nofade : `${split > 0 ? '+' : '−'}${Math.abs(split)} s ${split > 0 ? L.slower : L.faster}`;
   if (!Tt || Tt < 3600 || Tt > 3*3600) { $('summary').textContent = L.bad; return; }
-  const pre = mode === 'probe' ? Math.max(0, +$('offset').value || 0) : 0, join = mode === 'probe' ? JOIN : 0, end = mode === 'probe' ? PEND : C.official, post = mode === 'probe' ? Math.max(0, +$('post').value || 0) : 0;
+  const pre = 0, join = mode === 'probe' ? JOIN : 0, end = mode === 'probe' ? PEND : C.official, post = 0;  // Probelauf: crossing to crossing, no pitch laps
   kmOff = pre - join;
   const seg = profile(Tt, up, split);
   const kmRows = rows(seg, pre, join, bounds(pre, join, 1000, end, post), end);
@@ -443,7 +440,7 @@ function update() {
   $('summary').innerHTML = `<span>Ø <b>${fmt(Tt / C.official * 1000)}/km</b></span><span>${L.halves} <b>${fmt(h1)} / ${fmt(Tt-h1)}</b></span><span>${L.km10} <b>${fmt(interp(C.d, cum, 10000))}</b></span><span>${L.flat} <b>${fmt(Tt / G.reduce((a,g,i)=>a+(C.d[i+1]-C.d[i])*f(g),0) * 1000)}/km</b></span>${join?`<span>${L.probeclock} ${L.from}${pre||post?' '+L.plus:''}: <b>${fmt(last.cum)}</b> · ${nf(last.b/1000, 2)} km</span>`:''}`;
   drawMap(kmRows, join); drawProf(seg, kmRows, Tt); drawTable(tblRows, Tt);
 }
-['target','uphill','split','offset','post'].forEach(id => $(id).addEventListener('input', update));
+['target','uphill','split'].forEach(id => $(id).addEventListener('input', update));
 ['race','probe'].forEach(m => $('m-'+m).addEventListener('click', () => { mode = m; update(); }));
 ['en','de','fr','sw','by'].forEach(x => $('l-'+x).addEventListener('click', () => { lang = x; update(); }));
 [['1','g-1'],['2','g-2'],['s','g-s']].forEach(([g, id]) => $(id).addEventListener('click', () => { gran = g; update(); }));
