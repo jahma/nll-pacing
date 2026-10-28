@@ -256,9 +256,12 @@ function roadsBetween(a, b) {
   const seq = []; C.names.forEach(([k, r]) => { if (k >= a - 150 && k <= b && seq[seq.length-1] !== r) seq.push(r); });
   return seq.join(' → ');
 }
+// climb/descent display: 1 m hysteresis on the whole course (ignores GPS pebbles; sum matches recorded ~280 m),
+// applied once globally so rows always add up and ↑ − ↓ per row equals the row's height change
+const ALTF = (() => { const o = [C.alt[0]]; let ref = C.alt[0]; for (let i = 1; i < N; i++) { if (Math.abs(C.alt[i] - ref) >= 1) ref = C.alt[i]; o.push(ref); } return o; })();
 function terrain(a, b) {
   const i0 = Math.max(0, Math.floor(a/20)), i1 = Math.min(N-1, Math.floor(b/20)); let up = 0, dn = 0, gmax = 0, gmin = 0;
-  for (let i = i0; i < i1; i++) { const dh = C.alt[i+1] - C.alt[i]; if (dh > 0) up += dh; else dn += dh; gmax = Math.max(gmax, G[i]); gmin = Math.min(gmin, G[i]); }
+  for (let i = i0; i < i1; i++) { const dh = ALTF[i+1] - ALTF[i]; if (dh > 0) up += dh; else dn += dh; gmax = Math.max(gmax, G[i]); gmin = Math.min(gmin, G[i]); }
   return { up, dn, gmax, gmin };
 }
 function terrTag(a, b) {
