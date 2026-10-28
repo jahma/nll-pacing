@@ -8,7 +8,7 @@ für eine beliebige Zielzeit, mit Karte und Höhenprofil. Auch für den Probelau
 Privates, inoffizielles Projekt, kein Angebot des Veranstalters und ohne Gewähr.
 Offizielle Infos: https://nikolauslauf-tuebingen.de
 
-- Steigungsmodell: Faustregel nach Jack Daniels (≈ +3,3 % Pace je 1 % bergauf, −1,8 % je 1 % bergab).
+- Steigungsmodell: verbreitete Läufer-Faustregel, meist Jack Daniels zugeschrieben (≈ +3,3 % Pace je 1 % bergauf, −1,8 % je 1 % bergab).
 - Höhenprofil: Mittel aus drei eigenen GPS-Aufzeichnungen des Rennens (Powered by Strava).
 - Wegnamen: © OpenStreetMap-Mitwirkende.
 
