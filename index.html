@@ -177,7 +177,7 @@ const T = {
     cols: ['km', 'Split', 'Pace', 'Avg so far', 'Hm ↑ / ↓', 'Terrain', 'Clock', '', 'Where'], colsS: ['Section', 'Length', 'Time', 'Pace', 'Avg so far', 'Hm ↑ / ↓', 'Terrain', 'Clock', '', 'Where'],
     terr: ['climb','descent','rolling','flat'],
     avg: 'Average pace', avgnote: 'Watch the running average: it is steadier on the watch than elapsed time.',
-    halves: 'Halves', km10: 'Race-km 10', flat: 'Flat equivalent', probeclock: 'Probelauf clock', from: 'from the street', plus: '+ pitch',
+    halves: 'Halves', km10: '10 km split', flat: 'Flat equivalent', probeclock: 'Probelauf clock', from: 'from the street', plus: '+ pitch',
     climb: 'Climb', descent: 'Descent', up: 'climb', down: 'downhill', flatw: 'flat', max: 'max', legend: [['--down','down < −3 %'],['--flat','flat'],['--up1','+1.5–4 %'],['--up2','+4–7 %'],['--up3','> +7 %']],
     startfinish: 'Start/finish', pend: 'Probelauf finish', street: 'Probelauf joins the street', kmlabel: 'Race-km', kmlabelP: 'Probelauf-km', axis: 'height m (left) · target pace /km (right, line)',
     pitchrow: 'Pitch laps (flat)', bad: 'Enter the target as h:mm:ss, e.g. 1:27:00.',
@@ -193,7 +193,7 @@ const T = {
     cols: ['km', 'Split', 'Allure', 'Moy. cumulée', 'Hm ↑ / ↓', 'Terrain', 'Chrono', '', 'Où'], colsS: ['Section', 'Longueur', 'Temps', 'Allure', 'Moy. cumulée', 'Hm ↑ / ↓', 'Terrain', 'Chrono', '', 'Où'],
     terr: ['montée','descente','vallonné','plat'],
     avg: 'Allure moyenne', avgnote: '',
-    halves: 'Moitiés', km10: 'Km 10 (course)', flat: 'Équivalent plat', probeclock: 'Chrono Probelauf', from: 'depuis la route', plus: '+ stade',
+    halves: 'Moitiés', km10: 'Temps aux 10 km', flat: 'Équivalent plat', probeclock: 'Chrono Probelauf', from: 'depuis la route', plus: '+ stade',
     climb: 'Montée', descent: 'Descente', up: 'montée', down: 'descente', flatw: 'plat', max: 'max', legend: [['--down','descente < −3 %'],['--flat','plat'],['--up1','+1,5–4 %'],['--up2','+4–7 %'],['--up3','> +7 %']],
     startfinish: 'Départ/arrivée', pend: 'Arrivée Probelauf', street: 'Le Probelauf rejoint la route', kmlabel: 'Km course', kmlabelP: 'Km Probelauf', axis: 'altitude m (gauche) · allure cible /km (droite, ligne)',
     pitchrow: 'Tours de stade (plat)', bad: 'Saisissez le temps visé au format h:mm:ss, p. ex. 1:27:00.',
@@ -209,7 +209,7 @@ const T = {
     cols: ['km', 'Split', 'Pace', 'Ø bisher', 'Hm ↑ / ↓', 'Gelände', 'Uhr', '', 'Wo'], colsS: ['Abschnitt', 'Länge', 'Zeit', 'Pace', 'Ø bisher', 'Hm ↑ / ↓', 'Gelände', 'Uhr', '', 'Wo'],
     terr: ['Anstieg','Gefälle','wellig','flach'],
     avg: 'Durchschnittspace', avgnote: 'Auf den Durchschnitt achten: der ist auf der Uhr ruhiger als die Gesamtzeit.',
-    halves: 'Hälften', km10: 'Renn-km 10', flat: 'Flach-Äquivalent', probeclock: 'Probelauf-Uhr', from: 'ab der Straße', plus: '+ Sportplatz',
+    halves: 'Hälften', km10: '10-km-Zwischenzeit', flat: 'Flach-Äquivalent', probeclock: 'Probelauf-Uhr', from: 'ab der Straße', plus: '+ Sportplatz',
     climb: 'Anstieg', descent: 'Gefälle', up: 'bergauf', down: 'bergab', flatw: 'flach', max: 'max', legend: [['--down','bergab < −3 %'],['--flat','flach'],['--up1','+1,5–4 %'],['--up2','+4–7 %'],['--up3','> +7 %']],
     startfinish: 'Start/Ziel', pend: 'Probelauf-Ende', street: 'Probelauf auf die Straße', kmlabel: 'Renn-km', kmlabelP: 'Probelauf-km', axis: 'Höhe m (links) · Zieltempo /km (rechts, Linie)',
     pitchrow: 'Sportplatzrunden (flach)', bad: 'Zielzeit als h:mm:ss eingeben, z. B. 1:27:00.',
@@ -225,7 +225,7 @@ const T = {
     cols: ['km', 'Split', 'Pace', 'Ø bis jetzt', 'Hm ↑ / ↓', 'Gländ', 'Uhr', '', 'Wo'], colsS: ['Stückle', 'Läng', 'Zeit', 'Pace', 'Ø bis jetzt', 'Hm ↑ / ↓', 'Gländ', 'Uhr', '', 'Wo'],
     terr: ['Buckel','nab','wellig','eba'],
     avg: 'Em Schnitt', avgnote: 'Guck auf da Schnitt, dr isch auf dr Uhr ruhiger wie d\'Gesamtzeit.',
-    halves: 'Hälfta', km10: 'Renn-km 10', flat: 'Wie auf dr Eba', probeclock: 'Probelauf-Uhr', from: 'ab dr Straß', plus: '+ Sportplatz',
+    halves: 'Hälfta', km10: '10-km-Zwischazeit', flat: 'Wie auf dr Eba', probeclock: 'Probelauf-Uhr', from: 'ab dr Straß', plus: '+ Sportplatz',
     climb: 'Buckel', descent: 'Abfahrt', up: 'nauf', down: 'nab', flatw: 'eba', max: 'max', legend: [['--down','nab < −3 %'],['--flat','eba'],['--up1','+1,5–4 %'],['--up2','+4–7 %'],['--up3','> +7 %']],
     startfinish: 'Start/Ziel', pend: 'Probelauf-End', street: 'Probelauf auf d\'Straß', kmlabel: 'Renn-km', kmlabelP: 'Probelauf-km', axis: 'Höhe m (links) · Tempo /km (rechts, Linie)',
     pitchrow: 'Sportplatzronda (eba)', bad: 'Zielzeit als h:mm:ss neischreiba, z. B. 1:27:00.',
@@ -241,7 +241,7 @@ const T = {
     cols: ['km', 'Split', 'Pace', 'Ø bis jetzt', 'Hm ↑ / ↓', 'Gländ', 'Uhr', '', 'Wo'], colsS: ['Stückl', 'Läng', 'Zeit', 'Pace', 'Ø bis jetzt', 'Hm ↑ / ↓', 'Gländ', 'Uhr', '', 'Wo'],
     terr: ['Berg','owi','wellig','eben'],
     avg: 'Im Schnitt', avgnote: 'Schau auf\'n Schnitt, der is auf da Uhr ruhiger ois de Gsamtzeit.',
-    halves: 'Hälftn', km10: 'Renn-km 10', flat: 'Wia auf da Ebene', probeclock: 'Probelauf-Uhr', from: 'ab da Straß', plus: '+ Sportplatz',
+    halves: 'Hälftn', km10: '10-km-Zwischnzeit', flat: 'Wia auf da Ebene', probeclock: 'Probelauf-Uhr', from: 'ab da Straß', plus: '+ Sportplatz',
     climb: 'Berg', descent: 'Abfahrt', up: 'auffi', down: 'owi', flatw: 'eben', max: 'max', legend: [['--down','owi < −3 %'],['--flat','eben'],['--up1','+1,5–4 %'],['--up2','+4–7 %'],['--up3','> +7 %']],
     startfinish: 'Start/Ziel', pend: 'Probelauf-End', street: 'Probelauf auf d\'Straß', kmlabel: 'Renn-km', kmlabelP: 'Probelauf-km', axis: 'Höh m (links) · Tempo /km (rechts, Linie)',
     pitchrow: 'Sportplatzrundn (eben)', bad: 'Zielzeit ois h:mm:ss eigebn, z. B. 1:27:00.',
@@ -440,7 +440,7 @@ function update() {
   const tblRows = rows(seg, pre, join, bounds(pre, join, gran === 's' ? 0 : +gran * 1000, end, post), end);
   const cum = [0]; seg.forEach(x => cum.push(cum[cum.length-1] + x)); const h1 = interp(C.d, cum, C.official / 2);
   const last = kmRows[kmRows.length-1];
-  $('summary').innerHTML = `<span>Ø <b>${fmt(Tt / C.official * 1000)}/km</b></span><span>${L.halves} <b>${fmt(h1)} / ${fmt(Tt-h1)}</b></span><span>${L.km10} <b>${fmt(interp(C.d, cum, 10000))}</b></span><span>${L.flat} <b>${fmt(Tt / G.reduce((a,g,i)=>a+(C.d[i+1]-C.d[i])*f(g),0) * 1000)}/km</b></span>${join?`<span>${L.probeclock} ${L.from}${pre||post?' '+L.plus:''}: <b>${fmt(last.cum)}</b> · ${nf(last.b/1000, 2)} km</span>`:''}`;
+  $('summary').innerHTML = `<span>${L.km10} <b>${fmt(kmRows[9].cum)}</b></span><span>Ø <b>${fmt(Tt / C.official * 1000)}/km</b></span><span>${L.halves} <b>${fmt(h1)} / ${fmt(Tt-h1)}</b></span><span>${L.flat} <b>${fmt(Tt / G.reduce((a,g,i)=>a+(C.d[i+1]-C.d[i])*f(g),0) * 1000)}/km</b></span>${join?`<span>${L.probeclock} ${L.from}${pre||post?' '+L.plus:''}: <b>${fmt(last.cum)}</b> · ${nf(last.b/1000, 2)} km</span>`:''}`;
   drawMap(kmRows, join); drawProf(seg, kmRows, Tt); drawTable(tblRows, Tt);
 }
 ['target','uphill','split'].forEach(id => $(id).addEventListener('input', update));
