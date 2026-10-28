@@ -516,9 +516,10 @@ function drawFade() {
 function setTexts() {
   const L = t();
   [['t-intro','intro'],['t-sub','sub'],['t-lang','lang'],['t-target','target'],['t-run','run'],['m-race','race'],['m-probe','probe'],
-   ['t-uphill','uphill'],['t-split','split'],['t-splithint','splithint'],['t-course','course'],['t-profile','profile'],['hover','hover'],
+   ['t-uphill','uphill'],['t-split','split'],['t-course','course'],['t-profile','profile'],['hover','hover'],
    ['t-splits','splits'],['mhover','maphover'],['t-fadeh','fadeh'],['t-faden','faden'],['printbtn','printv'],['g-1','g1'],['g-2','g2'],['g-5','g5'],['g-mi','gmi'],['g-s','gs']].forEach(([id, k]) => $(id).textContent = L[k]);
   $('foot').innerHTML = L.foot.map(x => `<div>${x}</div>`).join('');
+  $('t-splithint').innerHTML = L.splithint.replace(/(siehe unten|see below|voir plus bas|guck unta|schau unt)/, '<a href="#fn-fade">$1</a>');
   document.documentElement.lang = lang === 'en' || lang === 'fr' ? lang : 'de';
   ['en','de','fr','sw','by'].forEach(x => $('l-'+x).setAttribute('aria-pressed', x === lang));
   $('m-race').setAttribute('aria-pressed', mode === 'race'); $('m-probe').setAttribute('aria-pressed', mode === 'probe');
