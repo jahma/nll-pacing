@@ -15,6 +15,7 @@ usage: fade.py RESULTS.json COURSE.json OUT.json
 import json, sys, statistics as st
 
 UP, DOWN, CAP = 3.3, 1.8, -0.08
+MAT = 10018.0  # 10 km mat position on the course: 10.006 / 10.024 / 10.023 km from own official splits vs GPS (2021/22/24)
 f = lambda g: 1 + UP * g if g > 0 else 1 + DOWN * max(g, CAP)
 
 
@@ -25,7 +26,8 @@ def main():
     for i in range(len(d) - 1):
         L = d[i + 1] - d[i]; g = (alt[i + 1] - alt[i]) / L; w = L * f(g); x = ((d[i] + d[i + 1]) / 2) / D - 0.5
         C += w; E += w * x
-        if d[i + 1] <= 10000: A += w; B += w * x
+        frac = max(0.0, min(1.0, (MAT - d[i]) / L))   # part of this 20 m piece before the mat
+        A += w * frac; B += w * x * frac
     p0 = A / C
     rows = [r for r in json.load(open(res)) if 2021 <= r["year"] <= 2025 and r["t10"] and r["finish"] and 3600 < r["finish"] < 4 * 3600]
     runners = []
