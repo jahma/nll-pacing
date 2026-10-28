@@ -124,6 +124,7 @@ h2 { font-family: var(--display); font-weight: 700; color: var(--ink); }
     <div class="ctl"><span class="lbl" id="t-run"></span>
       <div class="seg" role="group"><button id="m-race"></button><button id="m-probe"></button></div></div>
     <div class="ctl" id="offbox" hidden><label for="offset" id="t-pitch"></label><input id="offset" type="number" value="0" step="50" min="0" max="1500"></div>
+    <div class="ctl" id="offbox2" hidden><label for="post" id="t-post"></label><input id="post" type="number" value="0" step="50" min="0" max="1500"></div>
     <div class="ctl"><label for="uphill"><span id="t-uphill"></span> <output id="uphill-o"></output></label><input id="uphill" type="range" min="-0.3" max="0.5" step="0.01" value="0"></div>
     <div class="ctl"><label for="split"><span id="t-split"></span> <output id="split-o"></output></label><input id="split" type="range" min="-90" max="120" step="10" value="0"></div>
   </section>
@@ -170,7 +171,7 @@ const nf = (x, d = 1) => x.toFixed(d).replace('.', lang === 'en' ? '.' : ',');
 const T = {
   en: { intro: 'The Nikolauslauf is best run by feel, without a watch. If you want to know more precisely, or you are unsure, here is the guide: a target pace for every section, matched to the gradient.',
     sub: '21.1 km through the Schönbuch, about 300 m of climbing. Even effort over every gradient, with dials for climbs and split.',
-    lang: 'Language', target: 'Target time', run: 'Run', race: 'NLL', probe: 'Probelauf', pitch: 'Pitch laps first (m)',
+    lang: 'Language', target: 'Target time', run: 'Run', race: 'NLL', probe: 'Probelauf', pitch: 'Pitch laps first (m)', post: 'Pitch laps after (m)',
     uphill: 'Effort on climbs', split: 'Fade in 2nd half', slower: 'slower', faster: 'faster', nofade: 'none', even: 'even', course: 'Course', profile: 'Elevation & target pace',
     hover: 'Move over the profile for height, gradient and target pace.', climbs: 'Climbs & descents (≥ 15 m)',
     splits: 'Splits', g1: '1 km', g2: '2 km', gs: 'Sections',
@@ -186,7 +187,7 @@ const T = {
       '<b>Effort on climbs</b> above 0 means slowing down less on climbs and taking it back on flats and descents. <b>Probelauf:</b> the clock starts where the field comes off the pitch onto the street to Bebenhausen (race-km 0.65) and stops at the crossing at the end of “Across the field” (race-km 20.48, no finishing straight); target time is the race equivalent, so 1:35 for the 1:35 group.'] },
   fr: { intro: 'Le Nikolauslauf se court de préférence à la sensation, sans montre. Si vous voulez être plus précis ou si vous hésitez, voici le guide : une allure cible pour chaque section, adaptée à la pente.',
     sub: '21,1 km dans le Schönbuch, environ 300 m de dénivelé. Effort constant quelle que soit la pente, avec des réglages pour les montées et le split.',
-    lang: 'Langue', target: 'Temps visé', run: 'Course', race: 'NLL', probe: 'Probelauf', pitch: 'Tours de stade avant (m)',
+    lang: 'Langue', target: 'Temps visé', run: 'Course', race: 'NLL', probe: 'Probelauf', pitch: 'Tours de stade avant (m)', post: 'Tours de stade après (m)',
     uphill: 'Effort en montée', split: 'Baisse en 2e moitié', slower: 'plus lent', faster: 'plus rapide', nofade: 'aucune', even: 'constant', course: 'Parcours', profile: 'Profil & allure cible',
     hover: 'Survolez le profil pour l’altitude, la pente et l’allure cible.', climbs: 'Montées & descentes (≥ 15 m)',
     splits: 'Temps de passage', g1: '1 km', g2: '2 km', gs: 'Sections',
@@ -202,7 +203,7 @@ const T = {
       '<b>Effort en montée</b> au-dessus de 0 : ralentir moins dans les montées et récupérer sur le plat et en descente. <b>Probelauf :</b> le chrono démarre là où le peloton quitte le stade pour la route de Bebenhausen (km 0,65) et s’arrête au croisement à la fin de « À travers champs » (km 20,48, sans ligne droite finale) ; le temps visé est l’équivalent course, donc 1:35 pour le groupe 1:35.'] },
   de: { intro: 'Am besten läuft man den Nikolauslauf nach Gefühl und ohne Uhr. Wer es genauer wissen will oder unsicher ist, findet hier den Guide: ein Zieltempo für jeden Abschnitt, passend zur Steigung.',
     sub: '21,1 km Schönbuch, rund 300 Höhenmeter. Gleichmäßige Anstrengung über jede Steigung, mit Reglern für Berge und Split.',
-    lang: 'Sprache', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Sportplatz vorher (m)',
+    lang: 'Sprache', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Sportplatz vorher (m)', post: 'Sportplatz nachher (m)',
     uphill: 'Einsatz am Berg', split: 'Einbruch 2. Hälfte', slower: 'langsamer', faster: 'schneller', nofade: 'keiner', even: 'gleichmäßig', course: 'Strecke', profile: 'Höhenprofil & Zieltempo',
     hover: 'Über das Profil fahren für Höhe, Steigung und Zieltempo.', climbs: 'Anstiege & Gefälle (≥ 15 Hm)',
     splits: 'Splits', g1: '1 km', g2: '2 km', gs: 'Abschnitte',
@@ -218,7 +219,7 @@ const T = {
       '<b>Einsatz am Berg</b> über 0 heißt: am Berg weniger langsamer werden, im Flachen und bergab zurückholen. <b>Probelauf:</b> Die Uhr startet, wo das Feld vom Sportplatz auf die Straße nach Bebenhausen kommt (Renn-km 0,65), und endet an der Kreuzung am Ende von „Übers Feld“ (Renn-km 20,48, ohne Zielgerade); Zielzeit = Renn-Äquivalent, also 1:35 für die 1:35-Gruppe.'] },
   sw: { intro: 'Am beschte lauft mr dr Nikolauslauf noch Gfühl ond ohne Uhr. Wer\'s genauer wissa will oder ned sicher isch: Do isch dr Guide, mit am Tempo für jedes Stückle, passend zur Steigung.',
     sub: '21,1 km durch dr Schönbuch, so 300 Höhameter. Gleichmäßig schaffa, egal wie steil, ond Regler für Buckel ond Split.',
-    lang: 'Sproch', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Erscht auf em Sportplatz (m)',
+    lang: 'Sproch', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Erscht auf em Sportplatz (m)', post: 'Hinterher auf em Sportplatz (m)',
     uphill: 'Am Buckel', split: 'Eibruch 2. Hälfte', slower: 'langsamer', faster: 'schneller', nofade: 'koiner', even: 'gleichmäßig', course: 'D\'Strecke', profile: 'Wie\'s nauf ond nab goht',
     hover: 'Mit dr Maus übers Profil, no siehsch Höhe, Steigung ond Tempo.', climbs: 'Buckel & Abfahrta (≥ 15 Hm)',
     splits: 'Splits', g1: '1 km', g2: '2 km', gs: 'Stückle',
@@ -234,7 +235,7 @@ const T = {
       '<b>Am Buckel</b> über 0: am Berg weniger langsam werra, des holsch no em Flacha ond bergab wieder raus. <b>Probelauf:</b> D\'Uhr lauft ab do, wo\'s Feld vom Sportplatz auf d\'Straß noch Bebahausa kommt (Renn-km 0,65), ond hört an dr Kreuzung am End vo „Übers Feld“ auf (ohne Zielgerade); Zielzeit = wie em Renna, also 1:35 für d\'1:35-Gruppe.'] },
   by: { intro: 'Am bestn lafft ma an Nikolauslauf nach Gfui und ohne Uhr. Wer\'s genauer wissn mog oder se ned sicher is: Do is da Guide, mit am Tempo für jeds Stückl, passend zur Steigung.',
     sub: '21,1 km durch\'n Schönbuch, guad 300 Höhenmeter. Gleichmäßig higlangt, wurscht wia steil, mit Reglern für Berg und Split.',
-    lang: 'Sprach', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Zerscht am Sportplatz (m)',
+    lang: 'Sprach', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Zerscht am Sportplatz (m)', post: 'Hinterher am Sportplatz (m)',
     uphill: 'Am Berg', split: 'Eibruch 2. Hälftn', slower: 'langsamer', faster: 'schneller', nofade: 'koana', even: 'gleichmäßig', course: 'D\'Streckn', profile: 'Wia\'s auffi und owi geht',
     hover: 'Mit da Maus übers Profil, nacha siagst Höh, Steigung und Tempo.', climbs: 'Berg & Abfahrtn (≥ 15 Hm)',
     splits: 'Splits', g1: '1 km', g2: '2 km', gs: 'Stückl',
@@ -287,21 +288,25 @@ function profile(Tt, up, split) {
   const s = raw.reduce((a,b) => a+b, 0); return raw.map(r => r * Tt / s);
 }
 // rows: list of {from, to} in run metres (Probelauf: pitch metres first, then course from JOIN)
-function rows(seg, pre, join, bounds) {
+// run metres: [0, pre) pitch before · [pre, pre+L) course from join to end · [pre+L, …) pitch after (flat pace)
+function rows(seg, pre, join, bounds, end) {
   const cum = [0]; seg.forEach(x => cum.push(cum[cum.length-1] + x));
   const flat = 1000 * seg.reduce((a,x)=>a+x,0) / G.reduce((a,g,i)=>a+(C.d[i+1]-C.d[i])*f(g),0);
-  const c0 = interp(C.d, cum, join);
-  const at = m => m <= pre ? m / 1000 * flat : pre / 1000 * flat + interp(C.d, cum, join + m - pre) - c0;
-  const rd = m => Math.max(join, join + m - pre);
+  const c0 = interp(C.d, cum, join), L = end - join, tL = interp(C.d, cum, end) - c0;
+  const at = m => m <= pre ? m / 1000 * flat
+    : m <= pre + L ? pre / 1000 * flat + interp(C.d, cum, join + m - pre) - c0
+    : pre / 1000 * flat + tL + (m - pre - L) / 1000 * flat;
+  const rd = m => Math.min(end, Math.max(join, join + m - pre));
   return bounds.map(([a, b, sec]) => { const ta = at(a), tb = at(b);
     return { a, b, len: b - a, time: tb - ta, cum: tb, avg: tb / b * 1000, from: rd(a), to: rd(b), sec,
-      dh: interp(C.d, C.alt, rd(b)) - interp(C.d, C.alt, rd(a)), pitch: b <= pre }; });
+      dh: interp(C.d, C.alt, rd(b)) - interp(C.d, C.alt, rd(a)), pitch: b <= pre || a >= pre + L - 0.5 }; });
 }
-function bounds(pre, join, step, end) {
-  const total = pre + end - join, out = [];
+function bounds(pre, join, step, end, post = 0) {
+  const total = pre + end - join + post, out = [];
   if (step) { let m = 0; while (m < total - 1) { const n = Math.min(total, m + step); out.push([m, n]); m = n; } return out; }
   if (pre > 0) out.push([0, pre, null]);
   C.sections.forEach(s => { if (s.to <= join || s.from >= end) return; const a = Math.max(s.from, join) - join + pre, b = Math.min(s.to, end) - join + pre; out.push([a, b, s]); });
+  if (post > 0) out.push([pre + end - join, total, null]);
   return out;
 }
 
@@ -408,7 +413,7 @@ function drawTable(rs, Tt) {
 
 function setTexts() {
   const L = t();
-  [['t-intro','intro'],['t-sub','sub'],['t-lang','lang'],['t-target','target'],['t-run','run'],['m-race','race'],['m-probe','probe'],['t-pitch','pitch'],
+  [['t-intro','intro'],['t-sub','sub'],['t-lang','lang'],['t-target','target'],['t-run','run'],['m-race','race'],['m-probe','probe'],['t-pitch','pitch'],['t-post','post'],
    ['t-uphill','uphill'],['t-split','split'],['t-course','course'],['t-profile','profile'],['hover','hover'],
    ['t-splits','splits'],['g-1','g1'],['g-2','g2'],['g-s','gs']].forEach(([id, k]) => $(id).textContent = L[k]);
   $('foot').innerHTML = L.foot.map(x => `<div>${x}</div>`).join('');
@@ -416,7 +421,7 @@ function setTexts() {
   ['en','de','fr','sw','by'].forEach(x => $('l-'+x).setAttribute('aria-pressed', x === lang));
   $('m-race').setAttribute('aria-pressed', mode === 'race'); $('m-probe').setAttribute('aria-pressed', mode === 'probe');
   [['1','g-1'],['2','g-2'],['s','g-s']].forEach(([g, id]) => $(id).setAttribute('aria-pressed', g === gran));
-  $('offbox').hidden = mode !== 'probe';
+  $('offbox').hidden = mode !== 'probe'; $('offbox2').hidden = mode !== 'probe';
   $('disc').hidden = lang !== 'sw' && lang !== 'by';
 }
 
@@ -426,17 +431,17 @@ function update() {
   $('uphill-o').textContent = up === 0 ? L.even : (up > 0 ? '+' : '') + Math.round(up*100) + ' %';
   $('split-o').textContent = split === 0 ? L.nofade : `${split > 0 ? '+' : '−'}${Math.abs(split)} s ${split > 0 ? L.slower : L.faster}`;
   if (!Tt || Tt < 3600 || Tt > 3*3600) { $('summary').textContent = L.bad; return; }
-  const pre = mode === 'probe' ? Math.max(0, +$('offset').value || 0) : 0, join = mode === 'probe' ? JOIN : 0, end = mode === 'probe' ? PEND : C.official;
+  const pre = mode === 'probe' ? Math.max(0, +$('offset').value || 0) : 0, join = mode === 'probe' ? JOIN : 0, end = mode === 'probe' ? PEND : C.official, post = mode === 'probe' ? Math.max(0, +$('post').value || 0) : 0;
   kmOff = pre - join;
   const seg = profile(Tt, up, split);
-  const kmRows = rows(seg, pre, join, bounds(pre, join, 1000, end));
-  const tblRows = rows(seg, pre, join, bounds(pre, join, gran === 's' ? 0 : +gran * 1000, end));
+  const kmRows = rows(seg, pre, join, bounds(pre, join, 1000, end, post), end);
+  const tblRows = rows(seg, pre, join, bounds(pre, join, gran === 's' ? 0 : +gran * 1000, end, post), end);
   const cum = [0]; seg.forEach(x => cum.push(cum[cum.length-1] + x)); const h1 = interp(C.d, cum, C.official / 2);
   const last = kmRows[kmRows.length-1];
-  $('summary').innerHTML = `<span>Ø <b>${fmt(Tt / C.official * 1000)}/km</b></span><span>${L.halves} <b>${fmt(h1)} / ${fmt(Tt-h1)}</b></span><span>${L.km10} <b>${fmt(interp(C.d, cum, 10000))}</b></span><span>${L.flat} <b>${fmt(Tt / G.reduce((a,g,i)=>a+(C.d[i+1]-C.d[i])*f(g),0) * 1000)}/km</b></span>${join?`<span>${L.probeclock} ${L.from}${pre?' '+L.plus:''}: <b>${fmt(last.cum)}</b> · ${nf(last.b/1000, 2)} km</span>`:''}`;
+  $('summary').innerHTML = `<span>Ø <b>${fmt(Tt / C.official * 1000)}/km</b></span><span>${L.halves} <b>${fmt(h1)} / ${fmt(Tt-h1)}</b></span><span>${L.km10} <b>${fmt(interp(C.d, cum, 10000))}</b></span><span>${L.flat} <b>${fmt(Tt / G.reduce((a,g,i)=>a+(C.d[i+1]-C.d[i])*f(g),0) * 1000)}/km</b></span>${join?`<span>${L.probeclock} ${L.from}${pre||post?' '+L.plus:''}: <b>${fmt(last.cum)}</b> · ${nf(last.b/1000, 2)} km</span>`:''}`;
   drawMap(kmRows, join); drawProf(seg, kmRows, Tt); drawTable(tblRows, Tt);
 }
-['target','uphill','split','offset'].forEach(id => $(id).addEventListener('input', update));
+['target','uphill','split','offset','post'].forEach(id => $(id).addEventListener('input', update));
 ['race','probe'].forEach(m => $('m-'+m).addEventListener('click', () => { mode = m; update(); }));
 ['en','de','fr','sw','by'].forEach(x => $('l-'+x).addEventListener('click', () => { lang = x; update(); }));
 [['1','g-1'],['2','g-2'],['s','g-s']].forEach(([g, id]) => $(id).addEventListener('click', () => { gran = g; update(); }));
