@@ -15,7 +15,7 @@ usage: fade.py RESULTS.json COURSE.json OUT.json
 import json, sys, statistics as st
 
 UP, DOWN, CAP = 3.3, 1.8, -0.08
-MAT = 10018.0  # 10 km mat position on the course: 10.006 / 10.024 / 10.023 km from own official splits vs GPS (2021/22/24)
+MAT = 10000.0  # 10 km mat at 10.0 km (own official splits vs GPS put it at 10.006 / 10.024 / 10.023 km, i.e. within ~20 m)
 f = lambda g: 1 + UP * g if g > 0 else 1 + DOWN * max(g, CAP)
 
 
