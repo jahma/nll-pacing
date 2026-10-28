@@ -25,6 +25,7 @@
   --bg: #111714; --surface: #18201c; --ink: #e4ebe6; --muted: #93a39a; --line: #2c3832;
   --accent: #6cc39d; --accent-soft: #1f3a2e;
   --down: #6aa7e6; --flat: #6f7d75; --up1: #e2b452; --up2: #e98249; --up3: #f05a43; color-scheme: dark }
+[hidden] { display: none !important; }  /* the claude.ai wrapper has this; the standalone site needs it */
 body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); }
 .wrap { max-width: 1180px; margin: 0 auto; padding-block: 24px 48px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
