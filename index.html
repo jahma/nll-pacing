@@ -32,6 +32,7 @@ body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); }
 header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 12px; }
 h1 { font: 700 2.4rem/1 var(--display); letter-spacing: .01em; margin: 0; text-wrap: balance; }
 h2 { font: 600 1.25rem/1.1 var(--display); letter-spacing: .04em; text-transform: uppercase; margin: 0 0 10px; color: var(--muted); }
+.intro { font-size: 1.1rem; line-height: 1.55; max-width: 68ch; margin: 0; }
 .sub { color: var(--muted); margin: 6px 0 0; max-width: 70ch; }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
 .controls { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: end; }
@@ -116,6 +117,7 @@ h2 { font-family: var(--display); font-weight: 700; color: var(--ink); }
       <div class="seg" role="group"><button id="l-de">Deutsch</button><button id="l-en">English</button><button id="l-sw">Schwäbisch</button><button id="l-by">Boarisch</button></div>
       <span class="disc" id="disc" hidden>Nicht von Muttersprachlern geprüft.</span></div>
   </header>
+  <p class="intro" id="t-intro"></p>
 
   <section class="panel controls">
     <div class="ctl"><label for="target" id="t-target"></label><input id="target" type="text" value="1:27:00" inputmode="numeric"></div>
@@ -166,7 +168,8 @@ const nf = (x, d = 1) => x.toFixed(d).replace('.', lang === 'en' ? '.' : ',');
 
 // ---------- texts ----------
 const T = {
-  en: { sub: '21.1 km through the Schönbuch, about 300 m of climbing. Even effort over every gradient, with dials for climbs and split.',
+  en: { intro: 'The Nikolauslauf is best run by feel, without a watch. If you want to know more precisely, or you are unsure, here is the guide: a target pace for every section, matched to the gradient.',
+    sub: '21.1 km through the Schönbuch, about 300 m of climbing. Even effort over every gradient, with dials for climbs and split.',
     lang: 'Language', target: 'Target time', run: 'Run', race: 'NLL', probe: 'Probelauf', pitch: 'Pitch laps first (m)',
     uphill: 'Effort on climbs', split: '2nd half minus 1st', even: 'even', course: 'Course', profile: 'Elevation & target pace',
     hover: 'Move over the profile for height, gradient and target pace.', climbs: 'Climbs & descents (≥ 15 m)',
@@ -181,7 +184,8 @@ const T = {
     foot: ['<b>How the paces are set.</b> Every metre gets the pace that costs the same effort at its gradient; the whole is scaled to your target time. The gradient model is the rule of thumb from Jack Daniels (Daniels\' Running Formula): about 3.3 % slower per 1 % uphill, about 1.8 % faster per 1 % downhill. Elevation profile = mean of three race GPS tracks, normalised to 21.0975 km.',
       '<b>Checked against three past races:</b> predicted km splits are within 5–6 s/km. In past races the same 6 km stretch (km 2.5–8.5 and again 14.2–20.2) was 36–60 s slower the second time. With the split dial at 0 the plan assumes no fade; +30 to +60 s is what fatigue typically costs.',
       '<b>Effort on climbs</b> above 0 means slowing down less on climbs and taking it back on flats and descents. <b>Probelauf:</b> the clock starts where the field comes off the pitch onto the street to Bebenhausen (race-km 0.65) and stops at the crossing at the end of “Across the field” (race-km 20.48, no finishing straight); target time is the race equivalent, so 1:35 for the 1:35 group.'] },
-  de: { sub: '21,1 km Schönbuch, rund 300 Höhenmeter. Gleichmäßige Anstrengung über jede Steigung, mit Reglern für Berge und Split.',
+  de: { intro: 'Am besten läuft man den Nikolauslauf nach Gefühl und ohne Uhr. Wer es genauer wissen will oder unsicher ist, findet hier den Guide: ein Zieltempo für jeden Abschnitt, passend zur Steigung.',
+    sub: '21,1 km Schönbuch, rund 300 Höhenmeter. Gleichmäßige Anstrengung über jede Steigung, mit Reglern für Berge und Split.',
     lang: 'Sprache', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Sportplatz vorher (m)',
     uphill: 'Einsatz am Berg', split: '2. minus 1. Hälfte', even: 'gleichmäßig', course: 'Strecke', profile: 'Höhenprofil & Zieltempo',
     hover: 'Über das Profil fahren für Höhe, Steigung und Zieltempo.', climbs: 'Anstiege & Gefälle (≥ 15 Hm)',
@@ -196,7 +200,8 @@ const T = {
     foot: ['<b>So entstehen die Tempi.</b> Jeder Meter bekommt das Tempo, das bei seiner Steigung gleich viel Kraft kostet; das Ganze wird auf die Zielzeit skaliert. Steigungsmodell: Faustregel nach Jack Daniels (Daniels\' Running Formula), etwa 3,3 % langsamer je Prozent bergauf und 1,8 % schneller je Prozent bergab. Höhenprofil = Mittel dreier Renn-GPS-Tracks, auf 21,0975 km normiert.',
       '<b>Gegen drei frühere Rennen geprüft:</b> vorhergesagte km-Splits liegen 5–6 s/km daneben. In den Rennen war dasselbe 6-km-Stück (km 2,5–8,5 und wieder 14,2–20,2) beim zweiten Mal 36–60 s langsamer. Mit Split 0 rechnet der Plan ohne Einbruch; +30 bis +60 s ist, was Ermüdung typischerweise kostet.',
       '<b>Einsatz am Berg</b> über 0 heißt: am Berg weniger langsamer werden, im Flachen und bergab zurückholen. <b>Probelauf:</b> Die Uhr startet, wo das Feld vom Sportplatz auf die Straße nach Bebenhausen kommt (Renn-km 0,65), und endet an der Kreuzung am Ende von „Übers Feld“ (Renn-km 20,48, ohne Zielgerade); Zielzeit = Renn-Äquivalent, also 1:35 für die 1:35-Gruppe.'] },
-  sw: { sub: '21,1 km durch dr Schönbuch, so 300 Höhameter. Gleichmäßig schaffa, egal wie steil, ond Regler für Buckel ond Split.',
+  sw: { intro: 'Am beschte lauft mr dr Nikolauslauf noch Gfühl ond ohne Uhr. Wer\'s genauer wissa will oder ned sicher isch: Do isch dr Guide, mit am Tempo für jedes Stückle, passend zur Steigung.',
+    sub: '21,1 km durch dr Schönbuch, so 300 Höhameter. Gleichmäßig schaffa, egal wie steil, ond Regler für Buckel ond Split.',
     lang: 'Sproch', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Erscht auf em Sportplatz (m)',
     uphill: 'Am Buckel', split: '2. Hälfte minus 1.', even: 'gleichmäßig', course: 'D\'Strecke', profile: 'Wie\'s nauf ond nab goht',
     hover: 'Mit dr Maus übers Profil, no siehsch Höhe, Steigung ond Tempo.', climbs: 'Buckel & Abfahrta (≥ 15 Hm)',
@@ -211,7 +216,8 @@ const T = {
     foot: ['<b>Wie\'s Tempo z\'stand kommt.</b> Jeder Meter kriegt des Tempo, wo bei seiner Steigung gleich viel Kraft koscht; ond älles zsamma ergibt d\'Zielzeit. Steigungsregel noch em Jack Daniels: pro Prozent nauf so 3,3 % langsamer, pro Prozent nab so 1,8 % schneller. S\'Profil isch dr Schnitt aus drei Renn-GPS-Tracks.',
       '<b>Gega drei frühere Renna prüft:</b> d\'km-Splits liegat 5–6 s/km drneba. Des gleiche 6-km-Stück (km 2,5–8,5 ond nomol 14,2–20,2) war beim zwoita Mol 36–60 s langsamer. Mit Split 0 rechnet dr Plan ohne Eibruch; +30 bis +60 s koscht\'s halt meischtens.',
       '<b>Am Buckel</b> über 0: am Berg weniger langsam werra, des holsch no em Flacha ond bergab wieder raus. <b>Probelauf:</b> D\'Uhr lauft ab do, wo\'s Feld vom Sportplatz auf d\'Straß noch Bebahausa kommt (Renn-km 0,65), ond hört an dr Kreuzung am End vo „Übers Feld“ auf (ohne Zielgerade); Zielzeit = wie em Renna, also 1:35 für d\'1:35-Gruppe.'] },
-  by: { sub: '21,1 km durch\'n Schönbuch, guad 300 Höhenmeter. Gleichmäßig higlangt, wurscht wia steil, mit Reglern für Berg und Split.',
+  by: { intro: 'Am bestn lafft ma an Nikolauslauf nach Gfui und ohne Uhr. Wer\'s genauer wissn mog oder se ned sicher is: Do is da Guide, mit am Tempo für jeds Stückl, passend zur Steigung.',
+    sub: '21,1 km durch\'n Schönbuch, guad 300 Höhenmeter. Gleichmäßig higlangt, wurscht wia steil, mit Reglern für Berg und Split.',
     lang: 'Sprach', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Zerscht am Sportplatz (m)',
     uphill: 'Am Berg', split: '2. Hälfte minus 1.', even: 'gleichmäßig', course: 'D\'Streckn', profile: 'Wia\'s auffi und owi geht',
     hover: 'Mit da Maus übers Profil, nacha siagst Höh, Steigung und Tempo.', climbs: 'Berg & Abfahrtn (≥ 15 Hm)',
@@ -382,7 +388,7 @@ function drawTable(rs, Tt) {
 
 function setTexts() {
   const L = t();
-  [['t-sub','sub'],['t-lang','lang'],['t-target','target'],['t-run','run'],['m-race','race'],['m-probe','probe'],['t-pitch','pitch'],
+  [['t-intro','intro'],['t-sub','sub'],['t-lang','lang'],['t-target','target'],['t-run','run'],['m-race','race'],['m-probe','probe'],['t-pitch','pitch'],
    ['t-uphill','uphill'],['t-split','split'],['t-course','course'],['t-profile','profile'],['hover','hover'],
    ['t-splits','splits'],['g-1','g1'],['g-2','g2'],['g-s','gs']].forEach(([id, k]) => $(id).textContent = L[k]);
   $('foot').innerHTML = L.foot.map(x => `<div>${x}</div>`).join('');
