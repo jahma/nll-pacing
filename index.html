@@ -82,6 +82,7 @@ td.note small { display: block; color: var(--muted); font-size: .8rem; }
 .chip { display: inline-block; font: 600 .7rem var(--body); letter-spacing: .05em; text-transform: uppercase;
   padding: 1px 7px; border-radius: 9px; margin-right: 6px; color: var(--surface); }
 .hint { font-size: .75rem; color: var(--muted); max-width: 26ch; line-height: 1.3; }
+#fadebox { scroll-margin-top: 16px; }
 .star { color: var(--accent); text-decoration: none; font-weight: 600; margin-left: 1px; }
 .disc { font-size: .8rem; color: var(--muted); font-style: italic; }
 .foot { font-size: .85rem; color: var(--muted); max-width: 80ch; display: grid; gap: 6px; }
@@ -144,7 +145,7 @@ h2 { font-family: var(--display); font-weight: 700; color: var(--ink); }
     <div class="ctl"><span class="lbl" id="t-run"></span>
       <div class="seg" role="group"><button id="m-race"></button><button id="m-probe"></button></div></div>
     <div class="ctl"><label for="uphill"><span id="t-uphill"></span> <output id="uphill-o"></output></label><input id="uphill" type="range" min="-0.2" max="0.2" step="0.01" value="0"></div>
-    <div class="ctl"><label for="split"><span id="t-split"></span><a href="#fn-fade" class="star">*</a> <output id="split-o"></output></label><input id="split" type="range" min="-90" max="120" step="10" value="0"><small class="hint" id="t-splithint"></small></div>
+    <div class="ctl"><label for="split"><span id="t-split"></span><a href="#fadebox" class="star">*</a> <output id="split-o"></output></label><input id="split" type="range" min="-90" max="120" step="10" value="0"><small class="hint" id="t-splithint"></small></div>
   </section>
 
   <div class="summary panel" id="summary"></div>
@@ -519,7 +520,7 @@ function setTexts() {
    ['t-uphill','uphill'],['t-split','split'],['t-course','course'],['t-profile','profile'],['hover','hover'],
    ['t-splits','splits'],['mhover','maphover'],['t-fadeh','fadeh'],['t-faden','faden'],['printbtn','printv'],['g-1','g1'],['g-2','g2'],['g-5','g5'],['g-mi','gmi'],['g-s','gs']].forEach(([id, k]) => $(id).textContent = L[k]);
   $('foot').innerHTML = L.foot.map(x => `<div>${x}</div>`).join('');
-  $('t-splithint').innerHTML = L.splithint.replace(/(siehe unten|see below|voir plus bas|guck unta|schau unt)/, '<a href="#fn-fade">$1</a>');
+  $('t-splithint').innerHTML = L.splithint.replace(/(siehe unten|see below|voir plus bas|guck unta|schau unt)/, '<a href="#fadebox">$1</a>');
   document.documentElement.lang = lang === 'en' || lang === 'fr' ? lang : 'de';
   ['en','de','fr','sw','by'].forEach(x => $('l-'+x).setAttribute('aria-pressed', x === lang));
   $('m-race').setAttribute('aria-pressed', mode === 'race'); $('m-probe').setAttribute('aria-pressed', mode === 'probe');
