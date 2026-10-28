@@ -55,6 +55,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 svg { display: block; width: 100%; height: auto; }
 svg text { font-family: var(--mono); fill: var(--muted); }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--muted); margin-top: 8px; }
+.numnote { flex-basis: 100%; font-style: italic; }
 .legend i { display: inline-block; width: 18px; height: 6px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
 .hover { font: .85rem var(--mono); color: var(--muted); min-height: 1.4em; margin-top: 6px; }
 .tablehead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -194,7 +195,7 @@ const nf = (x, d = 1) => x.toFixed(d).replace('.', lang === 'en' ? '.' : ',');
 
 // ---------- texts ----------
 const T = {
-  en: { fadeh: 'How fast do NLL runners start?', faden: 'All finishers 2021–2025: seconds ahead (+) of or behind (−) the even plan at km 10, by finish time. Dot = median, bar = middle half, percent = share slower or faster than even. Rule of thumb: the fade dial is about 2 × these seconds.', fadel: 'cautious', fader: 'too fast', capped:'Target time limited to', printv: 'Print view', back: 'Back to the page', doprint: 'Print', pcols: ['#', 'Section', 'to km', 'Pace', 'Clock', 'Avg so far'],
+  en: { secword: 'Section', numsec: 'Numbers on the map and above the profile are sections (see table), not kilometres.', numkm: 'Numbers on the map are kilometres.', secshort: 'Sect.', fadeh: 'How fast do NLL runners start?', faden: 'All finishers 2021–2025: seconds ahead (+) of or behind (−) the even plan at km 10, by finish time. Dot = median, bar = middle half, percent = share slower or faster than even. Rule of thumb: the fade dial is about 2 × these seconds.', fadel: 'cautious', fader: 'too fast', capped:'Target time limited to', printv: 'Print view', back: 'Back to the page', doprint: 'Print', pcols: ['#', 'Section', 'to km', 'Pace', 'Clock', 'Avg so far'],
     disc: 'Not checked by a native speaker.', intro: 'The Nikolauslauf is best run by feel, with lots of fun and without looking at your watch too much. If you want to know more precisely, or you are unsure, here is a guide: a target pace for every section, matched to the gradient.',
     sub: '21.1 km through the Schönbuch, about 300 m of climbing.',
     lang: 'Language', target: 'Target time', run: 'Run', race: 'NLL', probe: 'Probelauf', pitch: 'Pitch laps first (m)', post: 'Pitch laps after (m)',
@@ -212,7 +213,7 @@ const T = {
       '<b>Checked against three of my own races:</b> predicted km splits are within 5–6 s/km. In past races the same 6 km stretch (km 2.5–8.5 and again 14.2–20.2) was 36–60 s slower the second time. The fade dial adds a gradual slowdown on top of the course (neutral at halfway): +30 s means the 2nd half is 30 s slower than at even effort, negative values mean a negative split. For very steep climbs and descents, other paces and other runners it may fit less well.',
       '<b>Effort on climbs</b> above 0 means slowing down less on climbs and taking it back on flats and descents. <b>Probelauf:</b> calculated from crossing to crossing: from the street to Bebenhausen (race-km 0.65) to the crossing at the end of “Across the field” (race-km 20.48), without laps on the sports ground before or after; target time is the race equivalent, so 1:35 for the 1:35 group.',
       '<span id="fn-fade"></span><b>* Fade in practice:</b> Even effort (0) is best. Across all finishers 2021–2025, though, the typical runner was about 25–40 s ahead of the even plan at km 10, which corresponds to roughly +50 to +80 s on the dial (above 2:05 more like +200 s).'] },
-  fr: { fadeh: 'À quelle vitesse partent les coureurs du NLL ?', faden: 'Tous les finishers 2021–2025 : secondes d’avance (+) ou de retard (−) sur le plan constant au km 10, par temps final. Point = médiane, barre = moitié centrale, pourcentage = part plus lente ou plus rapide que constant. Règle : le réglage « baisse » vaut environ 2 × ces secondes.', fadel: 'prudent', fader: 'trop vite', capped:'Temps visé limité à', printv: 'Vue impression', back: 'Retour à la page', doprint: 'Imprimer', pcols: ['#', 'Section', 'jusqu’au km', 'Allure', 'Chrono', 'Moy. cumulée'],
+  fr: { secword: 'Section', numsec: 'Les numéros sur la carte et au-dessus du profil sont des sections (voir le tableau), pas des kilomètres.', numkm: 'Les numéros sur la carte sont des kilomètres.', secshort: 'Sect.', fadeh: 'À quelle vitesse partent les coureurs du NLL ?', faden: 'Tous les finishers 2021–2025 : secondes d’avance (+) ou de retard (−) sur le plan constant au km 10, par temps final. Point = médiane, barre = moitié centrale, pourcentage = part plus lente ou plus rapide que constant. Règle : le réglage « baisse » vaut environ 2 × ces secondes.', fadel: 'prudent', fader: 'trop vite', capped:'Temps visé limité à', printv: 'Vue impression', back: 'Retour à la page', doprint: 'Imprimer', pcols: ['#', 'Section', 'jusqu’au km', 'Allure', 'Chrono', 'Moy. cumulée'],
     disc: 'Non relu par un locuteur natif.', intro: 'Le Nikolauslauf se court de préférence à la sensation, avec beaucoup de plaisir et sans trop regarder sa montre. Si vous voulez être plus précis ou si vous hésitez, voici un guide : une allure cible pour chaque section, adaptée à la pente.',
     sub: '21,1 km dans le Schönbuch, environ 300 m de dénivelé.',
     lang: 'Langue', target: 'Temps visé', run: 'Course', race: 'NLL', probe: 'Probelauf', pitch: 'Tours de stade avant (m)', post: 'Tours de stade après (m)',
@@ -230,7 +231,7 @@ const T = {
       '<b>Vérifié sur trois de mes propres courses :</b> les temps au km prédits sont à 5–6 s/km près. Lors des courses passées, le même tronçon de 6 km (km 2,5–8,5 puis 14,2–20,2) a été couru 36–60 s plus lentement au second passage. Le réglage « baisse » ajoute un ralentissement progressif en plus du parcours (neutre à mi-course) : +30 s signifie une 2e moitié 30 s plus lente qu’à effort constant, une valeur négative un negative split. Pour des pentes très raides, d’autres allures et d’autres coureurs, il peut moins bien convenir.',
       '<b>Effort en montée</b> au-dessus de 0 : ralentir moins dans les montées et récupérer sur le plat et en descente. <b>Probelauf :</b> calculé de croisement à croisement : de la route de Bebenhausen (km 0,65) au croisement à la fin de « À travers champs » (km 20,48), sans tours de stade avant ni après ; le temps visé est l’équivalent course, donc 1:35 pour le groupe 1:35.',
       '<span id="fn-fade"></span><b>* Baisse en pratique :</b> l’idéal est un effort constant (0). Mais chez tous les finishers 2021–2025, le coureur typique avait 25–40 s d’avance sur le plan constant au km 10, soit environ +50 à +80 s sur le réglage (au-delà de 2:05 plutôt +200 s).'] },
-  de: { fadeh: 'Wie schnell gehen NLL-LäuferInnen los?', faden: 'Alle FinisherInnen 2021–2025: Sekunden vor (+) oder hinter (−) dem gleichmäßigen Plan bei km 10, je Zielzeit. Punkt = Median, Balken = mittlere Hälfte, Prozent = Anteil vorsichtiger bzw. schneller als gleichmäßig. Faustregel: Der Regler „Einbruch“ entspricht etwa 2 × diesen Sekunden.', fadel: 'vorsichtig', fader: 'zu schnell', capped:'Zielzeit begrenzt auf', printv: 'Druckansicht', back: 'Zurück zur Seite', doprint: 'Drucken', pcols: ['#', 'Abschnitt', 'bis km', 'Pace', 'Uhr', 'Ø bisher'],
+  de: { secword: 'Abschnitt', numsec: 'Zahlen in der Karte und oben im Profil = Abschnitte (siehe Tabelle), keine Kilometer.', numkm: 'Zahlen in der Karte = Kilometer.', secshort: 'Abschn.', fadeh: 'Wie schnell gehen NLL-LäuferInnen los?', faden: 'Alle FinisherInnen 2021–2025: Sekunden vor (+) oder hinter (−) dem gleichmäßigen Plan bei km 10, je Zielzeit. Punkt = Median, Balken = mittlere Hälfte, Prozent = Anteil vorsichtiger bzw. schneller als gleichmäßig. Faustregel: Der Regler „Einbruch“ entspricht etwa 2 × diesen Sekunden.', fadel: 'vorsichtig', fader: 'zu schnell', capped:'Zielzeit begrenzt auf', printv: 'Druckansicht', back: 'Zurück zur Seite', doprint: 'Drucken', pcols: ['#', 'Abschnitt', 'bis km', 'Pace', 'Uhr', 'Ø bisher'],
     disc: '', intro: 'Am besten läuft man den Nikolauslauf nach Gefühl, mit viel Spaß und ohne zu viel auf die Uhr zu kucken. Wer es genauer wissen will oder unsicher ist, findet hier einen Guide: ein Zieltempo für jeden Abschnitt, passend zur Steigung.',
     sub: '21,1 km Schönbuch, rund 300 Höhenmeter.',
     lang: 'Sprache', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Sportplatz vorher (m)', post: 'Sportplatz nachher (m)',
@@ -248,7 +249,7 @@ const T = {
       '<b>Gegen drei eigene Rennen geprüft:</b> vorhergesagte km-Splits liegen 5–6 s/km daneben. In den Rennen war dasselbe 6-km-Stück (km 2,5–8,5 und wieder 14,2–20,2) beim zweiten Mal 36–60 s langsamer. Der Regler „Einbruch“ legt ein allmähliches Langsamerwerden über die ganze Strecke obendrauf (zur Hälfte neutral): +30 s heißt, die 2. Hälfte ist 30 s langsamer als bei gleichmäßiger Anstrengung; negative Werte bedeuten einen negativen Split (2. Hälfte schneller). Für sehr steile Anstiege und Gefälle sowie für andere Tempi und andere LäuferInnen passt das Modell womöglich weniger gut.',
       '<b>Einsatz am Berg</b> über 0 heißt: am Berg weniger langsamer werden, im Flachen und bergab zurückholen. <b>Probelauf:</b> gerechnet von Kreuzung zu Kreuzung: von der Straße nach Bebenhausen (Renn-km 0,65) bis zur Kreuzung am Ende von „Übers Feld“ (Renn-km 20,48), ohne Runden auf dem Sportplatz davor oder danach; Zielzeit = Renn-Äquivalent, also 1:35 für die 1:35-Gruppe.',
       '<span id="fn-fade"></span><b>* Einbruch in der Praxis:</b> Am besten läuft man gleichmäßig (0). Bei allen FinisherInnen 2021–2025 lag die Mitte bei km 10 aber rund 25–40 s vor dem gleichmäßigen Plan, das entspricht etwa +50 bis +80 s auf dem Regler (über 2:05 eher +200 s).'] },
-  sw: { fadeh: 'Wie schnell gangat d’NLL-LäuferInnen los?', faden: 'Älle FinisherInnen 2021–2025: Sekunda vor (+) oder hinter (−) em gleichmäßige Plan bei km 10, noch Zielzeit. Punkt = Median, Balka = mittlere Hälfte, Prozent = wer vorsichtiger bzw. schneller wie gleichmäßig. Faustregel: Dr Regler „Eibruch“ isch so 2 × die Sekunda.', fadel: 'vorsichtig', fader: 'z’schnell', capped:'Zielzeit begrenzt auf', printv: 'Druckasicht', back: 'Zrück zur Seit', doprint: 'Drucka', pcols: ['#', 'Stückle', 'bis km', 'Pace', 'Uhr', 'Ø bis jetzt'],
+  sw: { secword: 'Stückle', numsec: 'D’Zahla en dr Kart ond oba em Profil send Stückle (guck d’Tabell), koine Kilometer.', numkm: 'D’Zahla en dr Kart send Kilometer.', secshort: 'Stückle', fadeh: 'Wie schnell gangat d’NLL-LäuferInnen los?', faden: 'Älle FinisherInnen 2021–2025: Sekunda vor (+) oder hinter (−) em gleichmäßige Plan bei km 10, noch Zielzeit. Punkt = Median, Balka = mittlere Hälfte, Prozent = wer vorsichtiger bzw. schneller wie gleichmäßig. Faustregel: Dr Regler „Eibruch“ isch so 2 × die Sekunda.', fadel: 'vorsichtig', fader: 'z’schnell', capped:'Zielzeit begrenzt auf', printv: 'Druckasicht', back: 'Zrück zur Seit', doprint: 'Drucka', pcols: ['#', 'Stückle', 'bis km', 'Pace', 'Uhr', 'Ø bis jetzt'],
     disc: 'Nicht von Muttersprachlern geprüft.', intro: 'Am beschte lauft mr dr Nikolauslauf noch Gfühl, mit viel Spaß ond ohne zviel auf d\'Uhr z\'gucka. Wer\'s genauer wissa will oder ned sicher isch: Do isch a Guide, mit am Tempo für jedes Stückle, passend zur Steigung.',
     sub: '21,1 km durch dr Schönbuch, so 300 Höhameter.',
     lang: 'Sproch', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Erscht auf em Sportplatz (m)', post: 'Hinterher auf em Sportplatz (m)',
@@ -266,7 +267,7 @@ const T = {
       '<b>Gega drei vo meine eigene Renna prüft:</b> d\'km-Splits liegat 5–6 s/km drneba. Des gleiche 6-km-Stück (km 2,5–8,5 ond nomol 14,2–20,2) war beim zwoita Mol 36–60 s langsamer. Dr Regler „Eibruch“ macht di über d\'ganze Strecke allmählich langsamer (zur Hälfte neutral): +30 s hoißt, d\'2. Hälfte isch 30 s langsamer wie bei gleichmäßigem Schaffa; minus hoißt, d\'2. Hälfte isch schneller. Für arg steile Buckel, a anders Tempo ond andere LäuferInnen passt’s vielleicht ned so guat.',
       '<b>Am Buckel</b> über 0: am Berg weniger langsam werra, des holsch no em Flacha ond bergab wieder raus. <b>Probelauf:</b> grechnet vo Kreuzung zu Kreuzung: vo dr Straß noch Bebahausa (Renn-km 0,65) bis zur Kreuzung am End vo „Übers Feld“ (Renn-km 20,48), ohne Ronda auf em Sportplatz vorher oder hinterher; Zielzeit = wie em Renna, also 1:35 für d\'1:35-Gruppe.',
       '<span id="fn-fade"></span><b>* Eibruch en dr Praxis:</b> Am beschte gleichmäßig (0). Bei älle FinisherInnen 2021–2025 war d’Mitte bei km 10 aber so 25–40 s vor em gleichmäßige Plan, des send etwa +50 bis +80 s auf em Regler (über 2:05 eher +200 s).'] },
-  by: { fadeh: 'Wia schnell gengan d’NLL-LäuferInnen los?', faden: 'Olle FinisherInnen 2021–2025: Sekundn vor (+) oder hinter (−) dem gleichmäßign Plan bei km 10, nach Zielzeit. Punkt = Median, Balkn = mittlere Hälftn, Prozent = wer vorsichtiger bzw. schneller ois gleichmäßig. Faustregel: Da Regler „Eibruch“ is so 2 × de Sekundn.', fadel: 'vorsichtig', fader: 'z’schnell', capped:'Zielzeit begrenzt auf', printv: 'Druckansicht', back: 'Zruck zur Seitn', doprint: 'Druckn', pcols: ['#', 'Stückl', 'bis km', 'Pace', 'Uhr', 'Ø bis jetzt'],
+  by: { secword: 'Stückl', numsec: 'D’Zahln in da Kartn und obn im Profil san Stückl (schau d’Tabelln), koane Kilometer.', numkm: 'D’Zahln in da Kartn san Kilometer.', secshort: 'Stückl', fadeh: 'Wia schnell gengan d’NLL-LäuferInnen los?', faden: 'Olle FinisherInnen 2021–2025: Sekundn vor (+) oder hinter (−) dem gleichmäßign Plan bei km 10, nach Zielzeit. Punkt = Median, Balkn = mittlere Hälftn, Prozent = wer vorsichtiger bzw. schneller ois gleichmäßig. Faustregel: Da Regler „Eibruch“ is so 2 × de Sekundn.', fadel: 'vorsichtig', fader: 'z’schnell', capped:'Zielzeit begrenzt auf', printv: 'Druckansicht', back: 'Zruck zur Seitn', doprint: 'Druckn', pcols: ['#', 'Stückl', 'bis km', 'Pace', 'Uhr', 'Ø bis jetzt'],
     disc: 'Nicht von Muttersprachlern geprüft.', intro: 'Am bestn lafft ma an Nikolauslauf nach Gfui, mit vui Gaudi und ohne zvui auf d\'Uhr z\'schaun. Wer\'s genauer wissn mog oder se ned sicher is: Do is a Guide, mit am Tempo für jeds Stückl, passend zur Steigung.',
     sub: '21,1 km durch\'n Schönbuch, guad 300 Höhenmeter.',
     lang: 'Sprach', target: 'Zielzeit', run: 'Lauf', race: 'NLL', probe: 'Probelauf', pitch: 'Zerscht am Sportplatz (m)', post: 'Hinterher am Sportplatz (m)',
@@ -295,6 +296,10 @@ function roadsBetween(a, b) {
 // climb/descent display: 1 m hysteresis on the whole course (ignores GPS pebbles; sum matches recorded ~280 m),
 // applied once globally so rows always add up and ↑ − ↓ per row equals the row's height change
 const ALTF = (() => { const o = [C.alt[0]]; let ref = C.alt[0]; for (let i = 1; i < N; i++) { if (Math.abs(C.alt[i] - ref) >= 1) ref = C.alt[i]; o.push(ref); } return o; })();
+function secInfo(sec) {
+  const a = Math.max(sec.from, X0), b = Math.min(sec.to, X1), x = terrain(a, b);
+  return `${C.sections.indexOf(sec) + 1} · ${sec.name[lang]} · ${nf((b - a) / 1000, 2)} km · +${Math.round(x.up)} / −${Math.round(-x.dn)} m`;
+}
 function terrain(a, b) {
   const i0 = Math.max(0, Math.floor(a/20)), i1 = Math.min(N-1, Math.floor(b/20)); let up = 0, dn = 0, gmax = 0, gmin = 0;
   for (let i = i0; i < i1; i++) { const dh = ALTF[i+1] - ALTF[i]; if (dh > 0) up += dh; else dn += dh; gmax = Math.max(gmax, G[i]); gmin = Math.min(gmin, G[i]); }
@@ -367,8 +372,9 @@ function drawMap(marks, join) {
       const x = px(i), y = py(i), hit = badges.find(b => b.key === sec.key);
       if (hit) hit.lab.push(n + 1); else badges.push({ x, y, key: sec.key, lab: [n + 1] }); });
     badges.forEach(b => { const txt = b.lab.join('·'), w = 8 + txt.length * 6.2;
-      s += `<rect x="${(b.x - w/2).toFixed(1)}" y="${(b.y - 8).toFixed(1)}" width="${w.toFixed(1)}" height="16" rx="8" fill="${css('--ink')}"/>`
-        + `<text x="${b.x.toFixed(1)}" y="${(b.y + 4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="600" style="fill:var(--surface)">${txt}</text>`; });
+      const ttl = b.lab.map((n) => secInfo(C.sections[n - 1])).join('\n');
+      s += `<g><title>${ttl}</title><rect x="${(b.x - w/2).toFixed(1)}" y="${(b.y - 8).toFixed(1)}" width="${w.toFixed(1)}" height="16" rx="8" fill="${css('--ink')}"/>`
+        + `<text x="${b.x.toFixed(1)}" y="${(b.y + 4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="600" style="fill:var(--surface)">${txt}</text></g>`; });
   }
   if (gran !== 's') marks.forEach(k => { if (k.pitch || k.len < 999) return; const i = Math.min(N-1, Math.round(k.to / 20));
     s += `<circle cx="${px(i).toFixed(1)}" cy="${py(i).toFixed(1)}" r="7" fill="${css('--surface')}" stroke="${css('--ink')}" stroke-width="1.2"/>`
@@ -378,7 +384,7 @@ function drawMap(marks, join) {
     s += `<circle cx="${px(j)}" cy="${py(j)}" r="5" fill="${css('--ink')}"/><text x="${px(j)+9}" y="${py(j)+14}" font-size="11" style="fill:var(--ink)">${t().street}</text>`
       + `<rect x="${px(e)-5}" y="${py(e)-5}" width="10" height="10" fill="${css('--ink')}"/><text x="${px(e)-9}" y="${py(e)-9}" text-anchor="end" font-size="11" style="fill:var(--ink)">${t().pend}</text>`; }
   m.innerHTML = s;
-  $('legend').innerHTML = t().legend.map(([v,x]) => `<span><i style="background:var(${v})"></i>${x}</span>`).join('');
+  $('legend').innerHTML = t().legend.map(([v,x]) => `<span><i style="background:var(${v})"></i>${x}</span>`).join('') + `<span class="numnote">${gran === 's' ? t().numsec : t().numkm}</span>`;
 }
 
 // ---------- profile ----------
@@ -399,6 +405,7 @@ function drawProf(seg, marks, Tt) {
     if (n % 2) s += `<rect x="${a}" y="${Tp}" width="${b - a}" height="${PH - Tp - B0}" fill="${css('--accent-soft')}" fill-opacity=".55"/>`;
     s += `<line x1="${a}" x2="${a}" y1="${Tp - 14}" y2="${PH - B0}" stroke="${css('--muted')}" stroke-width=".8" stroke-dasharray="2 3"/>`
       + `<text x="${(a + b) / 2}" y="${Tp - 6}" text-anchor="middle" font-size="10" font-weight="600" style="fill:var(--ink)">${n + 1}</text>`; });
+  s += `<text x="${L0 - 4}" y="${Tp - 6}" text-anchor="end" font-size="10" style="fill:var(--muted)">${t().secshort}</text>`;
   for (let i = 0; i < N-1; i++) if (C.d[i] >= X0 - 1 && C.d[i+1] <= X1 + 1) s += `<polygon points="${xs(C.d[i])},${ya(aMin)} ${xs(C.d[i])},${ya(C.alt[i])} ${xs(C.d[i+1])},${ya(C.alt[i+1])} ${xs(C.d[i+1])},${ya(aMin)}" fill="${css(gcol(G[i]))}" fill-opacity="0.85"/>`;
   const pts = []; for (let i = 0; i < pace.length; i += 2) { if (C.d[i] < X0 - 1 || C.d[i] > X1 + 1) continue; const w = pace.slice(Math.max(0,i-5), i+5); pts.push(`${xs(C.d[i]).toFixed(1)},${yp(w.reduce((a,b)=>a+b)/w.length).toFixed(1)}`); }
   s += `<polyline points="${pts.join(' ')}" fill="none" stroke="${css('--ink')}" stroke-width="1.6"/>`;
@@ -415,7 +422,8 @@ $('prof').addEventListener('pointermove', e => {
   const r = $('prof').getBoundingClientRect(), x = (e.clientX - r.left) / r.width * PW;
   const d = Math.max(X0, Math.min(X1, X0 + (x - L0) / (PW - L0 - R0) * (X1 - X0))), i = Math.min(N-2, Math.floor(d/20));
   const cur = $('cur'); if (cur) { cur.setAttribute('x1', xs(d)); cur.setAttribute('x2', xs(d)); cur.setAttribute('visibility', 'visible'); }
-  $('hover').textContent = `${mode==='probe'?t().kmlabelP:t().kmlabel} ${nf((d+kmOff)/1000, 2)} · ${Math.round(C.alt[i])} m · ${nf(G[i]*100)} % · ${fmt(paceArr[i])}/km`;
+  const sec = C.sections.find((q) => q.from <= d && d < q.to);
+  $('hover').textContent = `${mode==='probe'?t().kmlabelP:t().kmlabel} ${nf((d+kmOff)/1000, 2)} · ${Math.round(C.alt[i])} m · ${nf(G[i]*100)} % · ${fmt(paceArr[i])}/km` + (sec ? `  ·  ${t().secword} ${secInfo(sec)}` : '');
 });
 
 // ---------- climbs ----------
