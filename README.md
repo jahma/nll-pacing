@@ -12,4 +12,6 @@ Offizielle Infos: https://nikolauslauf-tuebingen.de
 - Höhenprofil: Mittel aus drei eigenen GPS-Aufzeichnungen des Rennens (Powered by Strava).
 - Wegnamen: © OpenStreetMap-Mitwirkende.
 
+**Lizenz:** CC0 – frei verwendbar, auch ohne Nennung (siehe `LICENSE`). Ausgenommen: Wegnamen (© OpenStreetMap-Mitwirkende, ODbL); `analysis/fade_summary.json` sind Kennzahlen aus öffentlichen Ergebnislisten des Nikolauslaufs.
+
 `index.html` wird generiert; bitte nicht von Hand bearbeiten.
