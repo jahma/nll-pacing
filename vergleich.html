@@ -59,7 +59,7 @@ ul.top { margin: .3em 0 0; padding-left: 1.2em; }
 <div class="wrap">
   <h1>Nikolauslauf: Lauf gegen Plan</h1>
   <p class="sub">Lade die GPX-Datei eines Laufs auf der Strecke (Probelauf, Rennen oder ein Teilstück). Die Seite legt den Lauf auf die Strecke und vergleicht jeden Abschnitt mit dem gleichmäßigen Plan für <i>dieselbe</i> Zeit, also: wo warst du schneller oder langsamer als bei gleicher Anstrengung? <b>Die Datei bleibt auf deinem Gerät</b>; sie wird nur in deinem Browser ausgewertet.</p>
-  <p class="sub"><b>Nah am Plan zu sein ist kein Qualitätsmerkmal: Jede LäuferIn ist anders!</b> Der Plan ist nur eine Faustregel; wer bergauf stark ist, läuft dort eben schneller.</p>
+  <p class="sub"><b>Nah am Plan zu sein ist kein Qualitätsmerkmal: Jede LäuferIn ist anders!</b> Der Plan ist nur eine Faustregel; wer bergauf stark ist, läuft dort eben schneller. Der „Ø Abstand zum Plan“ sagt nur, wie gleichmäßig nach dieser Faustregel gelaufen wurde.</p>
 
   <section class="panel">
     <div class="controls">
@@ -376,6 +376,11 @@ function render() {
   const det = ck.detours.reduce((a, g) => a + g.s, 0);
   const k = [[fmt(r.Tact), 'Zeit auf dem gewerteten Stück'], [nf(L/1000, 2) + ' km', 'gewertete Strecke'], [fmt(r.Tact / L * 1000) + '/km', 'Ø Pace']];
   if (rt) k.push([sg(rt.Tact - rt.Tplan) + ' s', `gegenüber Plan für ${fmt(tgt)}`]);
+  // score: mean distance (s) ahead of / behind the plan at the section ends, weighted by length
+  const ref = rt || r, wl = ref.wins.reduce((a, w) => a + w.len, 0);
+  const avgGap = ref.wins.reduce((a, w) => a + Math.abs(w.cum) * w.len, 0) / wl;
+  const worst = ref.wins.reduce((a, w) => Math.abs(w.cum) > Math.abs(a.cum) ? w : a, ref.wins[0]);
+  k.push([Math.round(avgGap) + ' s', `Ø Abstand zum Plan${rt ? ' ' + fmt(tgt) : ''} (${nf(avgGap / ref.Tact * 100, 1)} % der Zeit) · max. ${sg(worst.cum)} s bei km ${nf(worst.b/1000, 1)}`]);
   $('kpis').innerHTML = k.map(([v, l]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
   const notes = [`Renn-km ${nf(r.c0/1000, 2)} bis ${nf(r.c1/1000, 2)}.`];
   if (m.stopped > 20) notes.push(`Stehzeit ${fmt(m.stopped)} herausgerechnet.`);
