@@ -59,7 +59,7 @@ ul.top { margin: .3em 0 0; padding-left: 1.2em; }
 <div class="wrap">
   <h1>Nikolauslauf: Lauf gegen Plan</h1>
   <p class="sub">Lade die GPX-Datei eines Laufs auf der Strecke (Probelauf, Rennen oder ein Teilstück). Die Seite legt den Lauf auf die Strecke und vergleicht jeden Abschnitt mit dem gleichmäßigen Plan für <i>dieselbe</i> Zeit, also: wo warst du schneller oder langsamer als bei gleicher Anstrengung? <b>Die Datei bleibt auf deinem Gerät</b>; sie wird nur in deinem Browser ausgewertet.</p>
-  <p class="sub"><b>Nah am Plan zu sein ist kein Qualitätsmerkmal: Jede LäuferIn ist anders!</b> Der Plan ist nur eine Faustregel; wer bergauf stark ist, läuft dort eben schneller. Der „Ø Abstand zum Plan“ sagt nur, wie gleichmäßig nach dieser Faustregel gelaufen wurde: Alle 200 m wird geschaut, wie viele Sekunden man vor oder hinter dem Plan für die eigene Zeit lag, und das gemittelt. Werte bis etwa 5 s liegen im Bereich der GPS-Ungenauigkeit. Der Plan geht von guten Streckenverhältnissen aus: Ist es bergab rutschig oder liegt Laub, sollte man dort natürlich langsamer laufen!</p>
+  <p class="sub"><b>Nah am Plan zu sein ist kein Qualitätsmerkmal: Jede LäuferIn ist anders!</b> Der Plan ist nur eine Faustregel; wer bergauf stark ist, läuft dort eben schneller. Der „Ø Abstand zum Plan“ sagt nur, wie gleichmäßig nach dieser Faustregel gelaufen wurde: Alle 200 m wird geschaut, wie viele Sekunden man vor oder hinter dem Plan für die eigene Zeit lag, und das gemittelt. Werte bis etwa 5 s liegen im Bereich der GPS-Ungenauigkeit. Langsamere Läufe sind länger auf jedem Anstieg und haben deshalb bei gleichem Pacing mehr Sekunden; der Anteil an der Zeit macht schnelle und langsame Läufe vergleichbar. Der Plan geht von guten Streckenverhältnissen aus: Ist es bergab rutschig oder liegt Laub, sollte man dort natürlich langsamer laufen!</p>
 
   <section class="panel">
     <div class="controls">
@@ -411,7 +411,7 @@ function render() {
   if (rt) k.push([sg(rt.Tact - rt.Tplan) + ' s', `gegenüber Plan für ${fmt(tgt)}`]);
   // score: mean |ahead/behind| vs the plan for the same time, every 200 m (independent of the view)
   const gs = M.gapScore(C, ck, 200);
-  k.splice(0, 0, [Math.round(gs.avg) + ' s', `Ø Abstand zum Plan (alle 200 m) · max. ${sg(gs.worst.gap)} s bei km ${nf(gs.worst.at/1000, 1)}`]);
+  k.splice(0, 0, [Math.round(gs.avg) + ' s', `Ø Abstand zum Plan (alle 200 m) · ${nf(gs.avg / r.Tact * 100, 2)} % der Zeit · max. ${sg(gs.worst.gap)} s bei km ${nf(gs.worst.at/1000, 1)}`]);
   $('kpis').innerHTML = k.map(([v, l]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
   const notes = [`Renn-km ${nf(r.c0/1000, 2)} bis ${nf(r.c1/1000, 2)}.`];
   if (m.stopped > 20) notes.push(`Stehzeit ${fmt(m.stopped)} herausgerechnet.`);
