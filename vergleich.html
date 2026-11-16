@@ -123,7 +123,8 @@ ul.top { margin: .3em 0 0; padding-left: 1.2em; }
 (function (root) {
 'use strict';
 var CLEAR_FROM = 650, CLEAR_TO = 20480;  // the unambiguous part: main road (race-km 0.65) to the crossing at the end of 'Übers Feld'
-var BREAK_S = 120, BREAK_M = 400, SIGMA = 12, OFF_D = 35, LEAVE = 6, BACK = 2, STOP_V = 0.8, MIN_STEP = 8;
+var STOP_W = 10;  // stop = net speed < STOP_V over ±STOP_W s
+var BREAK_S = 120, BREAK_M = 400, SIGMA = 12, OFF_D = 35, LEAVE = 6, BACK = 2, STOP_V = 0.5, MIN_STEP = 8;
 
 function xy(lat, lon, lat0) {
   var R = 6371000, k = Math.PI / 180;
@@ -148,7 +149,7 @@ function interp(xs, ys, x) {
 
 // ---- 1. moving clock + thinning ---------------------------------------------------------------
 function prepare(pts, lat0) {
-  // Stops are judged over a ±5 s window (net displacement / time), not per sample: with 1 s
+  // Stops are judged over a ±10 s window (net displacement / time), not per sample: with 1 s
   // sampling, GPS noise alone makes single steps look like standing still.
   var Q = [];
   for (var k = 0; k < pts.length; k++) {
@@ -160,8 +161,8 @@ function prepare(pts, lat0) {
   for (var k = 0; k < Q.length; k++) {
     if (k > 0) {
       var dt = Q[k].t - Q[k - 1].t, tm = (Q[k].t + Q[k - 1].t) / 2;
-      while (Q[lo].t < tm - 5 && lo < k - 1) lo++;
-      while (hi < Q.length - 1 && Q[hi + 1].t <= tm + 5) hi++;
+      while (Q[lo].t < tm - STOP_W && lo < k - 1) lo++;
+      while (hi < Q.length - 1 && Q[hi + 1].t <= tm + STOP_W) hi++;
       var a = Math.min(lo, k - 1), b = Math.max(hi, k);
       var v = Math.hypot(Q[b].x - Q[a].x, Q[b].y - Q[a].y) / (Q[b].t - Q[a].t);
       if (v < STOP_V) stopped += dt; else mv += dt;
