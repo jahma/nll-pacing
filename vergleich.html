@@ -90,11 +90,16 @@ ul.top { margin: .3em 0 0; padding-left: 1.2em; }
       <p class="note" id="notes"></p>
     </section>
     <section class="panel">
-      <h2>Tempo gegenüber konstant und Plan, je <span id="unit">Abschnitt</span></h2>
+      <h2>Abweichung vom Plan je <span id="unit">Abschnitt</span></h2>
       <svg id="chart" role="img" aria-label="Abweichung vom Plan"></svg>
-      <div class="legend"><span><i style="background:var(--fast)"></i>schneller als Plan</span><span><i style="background:var(--slow)"></i>langsamer als Plan</span><span><i style="background:none;border-top:1.5px solid var(--ink);height:0;vertical-align:3px"></i>Plan</span><span><i style="background:none;border-top:1.5px solid var(--accent);height:0;vertical-align:3px"></i>gelaufen</span><span><i style="background:#ddd"></i>Höhenprofil</span></div>
-      <p class="note" id="avgnote"></p>
+      <div class="legend"><span><i style="background:var(--fast)"></i>schneller als Plan</span><span><i style="background:var(--slow)"></i>langsamer als Plan</span><span><i style="background:#ddd"></i>Höhenprofil</span></div>
       <p class="note" id="top"></p>
+    </section>
+    <section class="panel">
+      <h2>Plan und Lauf gegenüber konstantem Tempo</h2>
+      <svg id="chart2" role="img" aria-label="Plan und Lauf gegenüber konstantem Tempo"></svg>
+      <div class="legend"><span><i style="background:none;border-top:1.5px solid var(--ink);height:0;vertical-align:3px"></i>Plan</span><span><i style="background:none;border-top:1.5px solid var(--accent);height:0;vertical-align:3px"></i>gelaufen</span><span><i style="background:#ddd"></i>Höhenprofil</span></div>
+      <p class="note" id="avgnote"></p>
     </section>
     <section class="panel"><h2>Tabelle</h2><div class="tbl"><table id="tbl"></table></div></section>
     <section class="panel mappanel"><h2>So wurde der Lauf auf die Strecke gelegt</h2><svg id="map" role="img" aria-label="Karte"></svg>
@@ -390,7 +395,7 @@ function render() {
   if (ck.pieces > 1 && ck.dropped > 300) notes.push(`Weitere ${nf(ck.dropped/1000, 1)} km auf der Strecke liegen außerhalb des längsten zusammenhängenden Stücks und sind nicht gewertet.`);
   $('notes').textContent = notes.join(' ');
   $('unit').textContent = gran === 'section' ? 'Abschnitt' : 'Kilometer';
-  drawChart(r); drawMap(); drawTable(r, rt, tgt);
+  drawChart(r); drawChart2(r); drawMap(); drawTable(r, rt, tgt);
   const top = r.wins.slice().sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, 3).filter(w => Math.abs(w.delta) >= 3);
   $('top').innerHTML = top.length ? '<b>Größte Abweichungen</b> (bei gleicher Gesamtzeit): ' + top.map(w =>
     `${w.label}${w.lap === 2 ? ' (Runde 2)' : ''} <span class="${w.delta < 0 ? 'fast' : 'slow'}">${sg(w.delta)} s</span> (${sg(w.delta / w.len * 1000)} s/km)`).join(' · ') : 'Sehr gleichmäßig gelaufen: keine Abweichung über 3 s.';
@@ -403,7 +408,7 @@ function drawChart(r) {
   const v = r.wins.map(w => w.delta / w.len * 1000);
   const avg = r.Tact / (r.c1 - r.c0) * 1000;  // constant pace over the stretch (s/km)
   const va = r.wins.map(w => w.act / w.len * 1000 - avg), vp = r.wins.map(w => w.plan / w.len * 1000 - avg);
-  const mx = Math.max(10, ...v.map(Math.abs), ...va.map(Math.abs), ...vp.map(Math.abs)) * 1.1;
+  const mx = Math.max(10, ...v.map(Math.abs)) * 1.15;
   const y = s => pt + (H - pt - pb) / 2 * (1 - s / mx), y0 = y(0);
   let s = '';
   // elevation in the background
@@ -425,10 +430,41 @@ function drawChart(r) {
     s += `<rect x="${a}" width="${Math.max(1, b-a)}" y="${Math.min(yy, y0)}" height="${Math.max(1, Math.abs(yy - y0))}" fill="${v[i] < 0 ? 'var(--fast)' : 'var(--slow)'}"><title>${w.label}: gelaufen ${fmt(w.act/w.len*1000)}/km, Plan ${fmt(w.plan/w.len*1000)}/km, Δ ${sg(w.delta)} s (${sg(v[i],1)} s/km)${w.flag ? ' ⚠' : ''}</title></rect>`;
     if (gran === 'section') s += `<text x="${(a+b)/2}" y="${H-pb+14}" text-anchor="middle" font-size="10" fill="#696969">${i+1}</text>`;
   });
+  if (gran !== 'section') for (let km = Math.ceil(r.c0/1000)*1000; km <= r.c1; km += 1000)
+    s += `<text x="${x(km)}" y="${H-4}" text-anchor="middle" font-size="10" fill="#999">${km/1000}</text>`;
+  s += `<text x="${W-pr}" y="${H-4}" text-anchor="end" font-size="10" fill="#999">${gran === 'section' ? 'Abschnitt (siehe Tabelle)' : 'Renn-km'}</text>`;
+  svg.innerHTML = s;
+}
+
+function drawChart2(r) {
+  const W = 900, H = 260, pl = 46, pr = 10, pt = 14, pb = 34, svg = $('chart2');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const x = d => pl + (d - r.c0) / (r.c1 - r.c0) * (W - pl - pr);
+  const avg = r.Tact / (r.c1 - r.c0) * 1000;
+  const va = r.wins.map(w => w.act / w.len * 1000 - avg), vp = r.wins.map(w => w.plan / w.len * 1000 - avg);
+  const mx = Math.max(10, ...va.map(Math.abs), ...vp.map(Math.abs)) * 1.1;
+  const y = v => pt + (H - pt - pb) / 2 * (1 - v / mx);
+  let s = '', amin = 1e9, amax = -1e9; const pts = [];
+  for (let i = 0; i < C.d.length; i++) if (C.d[i] >= r.c0 && C.d[i] <= r.c1) { amin = Math.min(amin, C.alt[i]); amax = Math.max(amax, C.alt[i]); }
+  for (let i = 0; i < C.d.length; i++) if (C.d[i] >= r.c0 && C.d[i] <= r.c1)
+    pts.push(`${x(C.d[i]).toFixed(1)},${(H - pb - (C.alt[i] - amin) / (amax - amin + 1) * (H - pt - pb) * 0.9).toFixed(1)}`);
+  s += `<polygon points="${x(r.c0)},${H-pb} ${pts.join(' ')} ${x(r.c1)},${H-pb}" fill="#ececec"/>`;
+  const stp = mx > 80 ? 30 : mx > 40 ? 20 : mx > 20 ? 10 : 5;
+  for (let g = -Math.floor(mx/stp)*stp; g <= mx; g += stp) {
+    s += `<line x1="${pl}" x2="${W-pr}" y1="${y(g)}" y2="${y(g)}" stroke="${g === 0 ? '#999' : '#e4e4e4'}"/>`;
+    s += `<text x="${pl-6}" y="${y(g)+4}" text-anchor="end" font-size="11" fill="#696969">${sg(g)}</text>`;
+  }
+  s += `<text x="${pl-6}" y="${pt-2}" text-anchor="end" font-size="10" fill="#696969">s/km</text>`;
+  s += `<text x="${pl+4}" y="${pt+10}" font-size="10" fill="#696969">langsamer ↑</text><text x="${pl+4}" y="${H-pb-4}" font-size="10" fill="#696969">schneller ↓</text>`;
+  r.wins.forEach((w, i) => {
+    const a = x(w.a), b = x(w.b);
+    s += `<rect x="${a}" width="${Math.max(1, b-a)}" y="${pt}" height="${H-pt-pb}" fill="transparent"><title>${w.label}: gelaufen ${fmt(w.act/w.len*1000)}/km, Plan ${fmt(w.plan/w.len*1000)}/km</title></rect>`;
+    if (gran === 'section') s += `<text x="${(a+b)/2}" y="${H-pb+14}" text-anchor="middle" font-size="10" fill="#696969">${i+1}</text>`;
+  });
   const step = vals => r.wins.map((w, i) => `${i ? 'L' : 'M'}${x(w.a).toFixed(1)},${y(vals[i]).toFixed(1)} L${x(w.b).toFixed(1)},${y(vals[i]).toFixed(1)}`).join(' ');
   s += `<path d="${step(vp)}" fill="none" stroke="var(--ink)" stroke-width="1.3" stroke-linejoin="round" pointer-events="none"/>`;
   s += `<path d="${step(va)}" fill="none" stroke="var(--accent)" stroke-width="1.3" stroke-linejoin="round" pointer-events="none"/>`;
-  $('avgnote').textContent = `Nulllinie = konstantes Tempo ${fmt(avg)}/km über das gewertete Stück. Schwarze Linie = Plan, rote Linie = gelaufen (jeweils Abweichung vom konstanten Tempo), Balken = Differenz gelaufen − Plan.`;
+  $('avgnote').textContent = `Nulllinie = konstantes Tempo ${fmt(avg)}/km über das gewertete Stück. Schwarz = Plan, rot = gelaufen; der Abstand der beiden Linien ist die Abweichung oben.`;
   if (gran !== 'section') for (let km = Math.ceil(r.c0/1000)*1000; km <= r.c1; km += 1000)
     s += `<text x="${x(km)}" y="${H-4}" text-anchor="middle" font-size="10" fill="#999">${km/1000}</text>`;
   s += `<text x="${W-pr}" y="${H-4}" text-anchor="end" font-size="10" fill="#999">${gran === 'section' ? 'Abschnitt (siehe Tabelle)' : 'Renn-km'}</text>`;
