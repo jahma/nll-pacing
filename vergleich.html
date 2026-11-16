@@ -18,6 +18,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); }
 .topbar { background: var(--accent); color: #fff; font: 600 .85rem var(--body); padding: 8px 16px; }
+.howto summary { cursor: pointer; } .howto ol { margin: .6em 0; padding-left: 1.3em; } .howto li { margin: .2em 0; }
 .testflag { background: #fff3c4; border-bottom: 2px solid #e0b000; color: #5a4500; padding: 10px 16px; font-size: .92rem; text-align: center; }
 .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
 h1 { font: 900 1.6rem var(--display); text-transform: uppercase; letter-spacing: .02em; color: var(--accent); margin: .4em 0 .1em; }
@@ -61,13 +62,25 @@ ul.top { margin: .3em 0 0; padding-left: 1.2em; }
 
   <section class="panel">
     <div class="controls">
-      <div class="drop" id="drop" tabindex="0" role="button"><b>GPX-Datei wählen</b> oder hierher ziehen<br><span class="note">Strava im Browser: Aktivität → „…“ → „GPX exportieren“</span></div>
+      <div class="drop" id="drop" tabindex="0" role="button"><b>GPX-Datei wählen</b> oder hierher ziehen<br><span class="note">Strava im Browser: Aktivität → „…“ → „GPX exportieren“ (<a href="#howto" onclick="event.stopPropagation(); document.getElementById('howto').open = true">Anleitung</a>)</span></div>
       <input type="file" id="file" accept=".gpx,application/gpx+xml" hidden>
       <label class="f">Zielzeit Rennen (optional)<input type="text" id="target" placeholder="z. B. 1:35" inputmode="decimal"></label>
       <div class="f"><span class="note">Auflösung</span><div class="seg" id="gran"><button data-v="section" aria-pressed="true">Abschnitte</button><button data-v="1000" aria-pressed="false">1 km</button></div></div>
     </div>
     <p class="note" id="status">Ausgewertet wird nur der eindeutige Teil der Strecke: von der Straße nach Bebenhausen (Renn-km 0,65) bis zur Kreuzung am Ende von „Übers Feld“ (Renn-km 20,48). Runden auf dem Platz, Ein- und Auslaufen zählen nicht.</p>
   </section>
+
+  <details class="panel howto" id="howto">
+    <summary><b>So bekommst du die GPX-Datei aus Strava</b></summary>
+    <ol>
+      <li>Die Aktivität auf <b>strava.com im Browser</b> öffnen (am Rechner; in der Strava-App gibt es keinen Export). Am Handy geht es im Browser über „Desktop-Website anfordern“.</li>
+      <li>Links neben der Karte auf <b>„…“</b> klicken.</li>
+      <li><b>„GPX exportieren“</b> wählen. Die Datei landet im Download-Ordner.</li>
+      <li>Die Datei oben in das Feld ziehen oder über „GPX-Datei wählen“ laden.</li>
+    </ol>
+    <p class="note">Wichtig: Das geht nur mit der <b>eigenen</b> Aktivität. Exportiert man die Aktivität von jemand anderem, enthält die Datei nur die Strecke ohne Zeiten, und dann ist kein Vergleich möglich. Wer für jemand anderen auswerten will: die Person bitten, die Datei selbst zu exportieren und zu schicken.</p>
+    <p class="note">Garmin Connect: Aktivität öffnen → Zahnrad → „In GPX exportieren“. Andere Uhren/Apps: Export als GPX, mit Zeiten.</p>
+  </details>
 
   <div id="out" hidden>
     <section class="panel">
@@ -336,7 +349,7 @@ function load(file) {
   const r = new FileReader();
   r.onload = () => {
     const pts = readGPX(r.result);
-    if (pts.length < 50) { $('status').innerHTML = '<span class="err">Keine Trackpunkte mit Zeitstempel gefunden. Bitte eine GPX-Datei mit Zeiten verwenden.</span>'; return; }
+    if (pts.length < 50) { $('status').innerHTML = '<span class="err">Die Datei enthält keine Zeiten. Das passiert, wenn man die Aktivität von jemand anderem exportiert: Bitte die eigene Aktivität exportieren (Anleitung unten).</span>'; return; }
     $('status').textContent = 'Lege den Lauf auf die Strecke …';
     setTimeout(() => {
       const m = M.match(C, pts);
