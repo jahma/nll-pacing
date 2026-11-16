@@ -59,7 +59,7 @@ ul.top { margin: .3em 0 0; padding-left: 1.2em; }
 <div class="wrap">
   <h1>Nikolauslauf: Lauf gegen Plan</h1>
   <p class="sub">Lade die GPX-Datei eines Laufs auf der Strecke (Probelauf, Rennen oder ein Teilstück). Die Seite legt den Lauf auf die Strecke und vergleicht jeden Abschnitt mit dem gleichmäßigen Plan für <i>dieselbe</i> Zeit, also: wo warst du schneller oder langsamer als bei gleicher Anstrengung? <b>Die Datei bleibt auf deinem Gerät</b>; sie wird nur in deinem Browser ausgewertet.</p>
-  <p class="sub"><b>Nah am Plan zu sein ist kein Qualitätsmerkmal: Jede LäuferIn ist anders!</b> Der Plan ist nur eine Faustregel; wer bergauf stark ist, läuft dort eben schneller. Der „Ø Abstand zum Plan“ sagt nur, wie gleichmäßig nach dieser Faustregel gelaufen wurde. Der Plan geht von guten Streckenverhältnissen aus: Ist es bergab rutschig oder liegt Laub, sollte man dort natürlich langsamer laufen!</p>
+  <p class="sub"><b>Nah am Plan zu sein ist kein Qualitätsmerkmal: Jede LäuferIn ist anders!</b> Der Plan ist nur eine Faustregel; wer bergauf stark ist, läuft dort eben schneller. Der „Ø Abstand zum Plan“ sagt nur, wie gleichmäßig nach dieser Faustregel gelaufen wurde: Alle 200 m wird geschaut, wie viele Sekunden man vor oder hinter dem Plan für die eigene Zeit lag, und das gemittelt. Der Plan geht von guten Streckenverhältnissen aus: Ist es bergab rutschig oder liegt Laub, sollte man dort natürlich langsamer laufen!</p>
 
   <section class="panel">
     <div class="controls">
@@ -321,7 +321,22 @@ function compare(C, ck, opts) {
   return { c0: c0, c1: c1, Tact: Tact, Tplan: (pl(c1) - pl(c0)) * sc, wins: wins, scale: sc };
 }
 
-var API = { CLEAR_FROM: CLEAR_FROM, CLEAR_TO: CLEAR_TO, match: match, clock: clock, compare: compare, planCum: planCum, interp: interp };
+// ---- 6. score: mean |ahead/behind| vs the equal-time plan, sampled every `step` m ---------------
+function gapScore(C, ck, step) {
+  step = step || 200;
+  var c0 = ck.D[0], c1 = ck.D[ck.D.length - 1], tm = ck.Tn;
+  var cum = planCum(C, 5000), pl = function (d) { return interp(C.d, cum, d); };
+  var act = function (d) { return interp(ck.D, tm, d) - interp(ck.D, tm, c0); };
+  var sc = act(c1) / (pl(c1) - pl(c0)), sum = 0, n = 0, worst = { gap: 0, at: c0 };
+  for (var d = c0 + step; d <= c1 + 0.01; d += step) {
+    var dd = Math.min(d, c1), g = act(dd) - (pl(dd) - pl(c0)) * sc;
+    sum += Math.abs(g); n++;
+    if (Math.abs(g) > Math.abs(worst.gap)) worst = { gap: g, at: dd };
+  }
+  return { avg: n ? sum / n : 0, worst: worst, step: step };
+}
+
+var API = { gapScore: gapScore,  CLEAR_FROM: CLEAR_FROM, CLEAR_TO: CLEAR_TO, match: match, clock: clock, compare: compare, planCum: planCum, interp: interp };
 if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.NLLM = API;
 })(this);
 
@@ -382,11 +397,9 @@ function render() {
   const det = ck.detours.reduce((a, g) => a + g.s, 0);
   const k = [[fmt(r.Tact), 'Zeit auf dem gewerteten Stück'], [nf(L/1000, 2) + ' km', 'gewertete Strecke'], [fmt(r.Tact / L * 1000) + '/km', 'Ø Pace']];
   if (rt) k.push([sg(rt.Tact - rt.Tplan) + ' s', `gegenüber Plan für ${fmt(tgt)}`]);
-  // score: mean distance (s) ahead of / behind the plan at the section ends, weighted by length
-  const ref = rt || r, wl = ref.wins.reduce((a, w) => a + w.len, 0);
-  const avgGap = ref.wins.reduce((a, w) => a + Math.abs(w.cum) * w.len, 0) / wl;
-  const worst = ref.wins.reduce((a, w) => Math.abs(w.cum) > Math.abs(a.cum) ? w : a, ref.wins[0]);
-  k.push([Math.round(avgGap) + ' s', `Ø Abstand zum Plan${rt ? ' ' + fmt(tgt) : ''} (${nf(avgGap / ref.Tact * 100, 1)} % der Zeit) · max. ${sg(worst.cum)} s bei km ${nf(worst.b/1000, 1)}`]);
+  // score: mean |ahead/behind| vs the plan for the same time, every 200 m (independent of the view)
+  const gs = M.gapScore(C, ck, 200);
+  k.splice(0, 0, [Math.round(gs.avg) + ' s', `Ø Abstand zum Plan (alle 200 m) · max. ${sg(gs.worst.gap)} s bei km ${nf(gs.worst.at/1000, 1)}`]);
   $('kpis').innerHTML = k.map(([v, l]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
   const notes = [`Renn-km ${nf(r.c0/1000, 2)} bis ${nf(r.c1/1000, 2)}.`];
   if (m.stopped > 20) notes.push(`Stehzeit ${fmt(m.stopped)} herausgerechnet.`);
