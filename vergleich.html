@@ -59,7 +59,7 @@ ul.top { margin: .3em 0 0; padding-left: 1.2em; }
 <div class="wrap">
   <h1>Nikolauslauf: Lauf gegen Plan</h1>
   <p class="sub">Lade die GPX-Datei eines Laufs auf der Strecke (Probelauf, Rennen oder ein Teilstück). Die Seite legt den Lauf auf die Strecke und vergleicht jeden Abschnitt mit dem gleichmäßigen Plan für <i>dieselbe</i> Zeit, also: wo warst du schneller oder langsamer als bei gleicher Anstrengung? <b>Die Datei bleibt auf deinem Gerät</b>; sie wird nur in deinem Browser ausgewertet.</p>
-  <p class="sub"><b>Nah am Plan zu sein ist kein Qualitätsmerkmal: Jede LäuferIn ist anders!</b> Der Plan ist nur eine Faustregel; wer bergauf stark ist, läuft dort eben schneller. Der „Ø Abstand zum Plan“ sagt nur, wie gleichmäßig nach dieser Faustregel gelaufen wurde: Alle 200 m wird geschaut, wie viele Sekunden man vor oder hinter dem Plan für die eigene Zeit lag, und das gemittelt. Der Plan geht von guten Streckenverhältnissen aus: Ist es bergab rutschig oder liegt Laub, sollte man dort natürlich langsamer laufen!</p>
+  <p class="sub"><b>Nah am Plan zu sein ist kein Qualitätsmerkmal: Jede LäuferIn ist anders!</b> Der Plan ist nur eine Faustregel; wer bergauf stark ist, läuft dort eben schneller. Der „Ø Abstand zum Plan“ sagt nur, wie gleichmäßig nach dieser Faustregel gelaufen wurde: Alle 200 m wird geschaut, wie viele Sekunden man vor oder hinter dem Plan für die eigene Zeit lag, und das gemittelt. Werte bis etwa 5 s liegen im Bereich der GPS-Ungenauigkeit. Der Plan geht von guten Streckenverhältnissen aus: Ist es bergab rutschig oder liegt Laub, sollte man dort natürlich langsamer laufen!</p>
 
   <section class="panel">
     <div class="controls">
@@ -148,26 +148,37 @@ function interp(xs, ys, x) {
 
 // ---- 1. moving clock + thinning ---------------------------------------------------------------
 function prepare(pts, lat0) {
-  var out = [], mv = 0, stopped = 0, prev = null, last = null;
+  // Stops are judged over a ±5 s window (net displacement / time), not per sample: with 1 s
+  // sampling, GPS noise alone makes single steps look like standing still.
+  var Q = [];
   for (var k = 0; k < pts.length; k++) {
-    var p = pts[k], q = xy(p.lat, p.lon, lat0);
-    if (prev) {
-      var dx = q[0] - prev.x, dy = q[1] - prev.y, dist = Math.sqrt(dx * dx + dy * dy), dt = p.t - prev.t;
-      if (dt <= 0) continue;
-      if (dist / dt < STOP_V) stopped += dt; else mv += dt;
-    }
-    prev = { x: q[0], y: q[1], t: p.t };
-    var cur = { x: q[0], y: q[1], t: p.t, mv: mv, lat: p.lat, lon: p.lon };
-    if (!last || Math.hypot(cur.x - last.x, cur.y - last.y) >= MIN_STEP || k === pts.length - 1) { out.push(cur); last = cur; }
+    if (Q.length && pts[k].t <= Q[Q.length - 1].t) continue;
+    var q = xy(pts[k].lat, pts[k].lon, lat0);
+    Q.push({ x: q[0], y: q[1], t: pts[k].t, lat: pts[k].lat, lon: pts[k].lon });
   }
-  return { pts: out, stopped: stopped, moving: mv, elapsed: pts.length ? pts[pts.length - 1].t - pts[0].t : 0 };
+  var out = [], mv = 0, stopped = 0, last = null, lo = 0, hi = 0;
+  for (var k = 0; k < Q.length; k++) {
+    if (k > 0) {
+      var dt = Q[k].t - Q[k - 1].t, tm = (Q[k].t + Q[k - 1].t) / 2;
+      while (Q[lo].t < tm - 5 && lo < k - 1) lo++;
+      while (hi < Q.length - 1 && Q[hi + 1].t <= tm + 5) hi++;
+      var a = Math.min(lo, k - 1), b = Math.max(hi, k);
+      var v = Math.hypot(Q[b].x - Q[a].x, Q[b].y - Q[a].y) / (Q[b].t - Q[a].t);
+      if (v < STOP_V) stopped += dt; else mv += dt;
+    }
+    var cur = { x: Q[k].x, y: Q[k].y, t: Q[k].t, mv: mv, lat: Q[k].lat, lon: Q[k].lon };
+    if (!last || Math.hypot(cur.x - last.x, cur.y - last.y) >= MIN_STEP || k === Q.length - 1) { out.push(cur); last = cur; }
+  }
+  return { pts: out, stopped: stopped, moving: mv, elapsed: Q.length ? Q[Q.length - 1].t - Q[0].t : 0 };
 }
 
 // ---- 2. Viterbi ---------------------------------------------------------------------------------
 function match(Cfull, pts) {
   var i0 = 0, i1 = Cfull.d.length - 1;
-  while (Cfull.d[i0 + 1] <= CLEAR_FROM) i0++;
-  while (Cfull.d[i1 - 1] >= CLEAR_TO) i1--;
+  // match with a 200 m margin on both sides, so points just outside project correctly instead of
+  // piling up on the end segment; they are dropped below (not clamped: that started the clock early)
+  while (Cfull.d[i0 + 1] <= CLEAR_FROM - 200) i0++;
+  while (Cfull.d[i1 - 1] >= CLEAR_TO + 200) i1--;
   var C = { d: Cfull.d.slice(i0, i1 + 1), lat: Cfull.lat.slice(i0, i1 + 1), lng: Cfull.lng.slice(i0, i1 + 1) };
   var N = C.d.length, M = N - 1, lat0 = C.lat[0];
   var cx = [], cy = [];
@@ -220,7 +231,7 @@ function match(Cfull, pts) {
   for (var t = 0; t < T; t++) {
     var st = path[t], on = st < M, i = on ? st : st - M;
     var dc = on ? C.d[i] + frac[t * M + i] * (C.d[i + 1] - C.d[i]) : NaN;
-    if (on) dc = Math.max(CLEAR_FROM, Math.min(CLEAR_TO, dc));
+    if (on && (dc < CLEAR_FROM || dc > CLEAR_TO)) { on = false; dc = NaN; }
     res.push({ t: P[t].t, mv: P[t].mv, lat: P[t].lat, lon: P[t].lon, on: on, dc: dc });
   }
   return { pts: res, stopped: prep.stopped, moving: prep.moving, elapsed: prep.elapsed };
